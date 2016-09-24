@@ -46,6 +46,11 @@ typedef void (*serialReceiveCallbackPtr)(uint16_t data);   // used by serial dri
 
 
 
+
+#define LED0
+#define LED1
+
+
 #define LED0_GPIO   GPIOB
 #define LED0_PIN    Pin_3 // PB3 (LED)
 #define LED1_GPIO   GPIOB

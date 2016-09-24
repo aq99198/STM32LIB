@@ -3,6 +3,8 @@
 
 core_t core;
 drv_pwm_config_t pwm_params;
+// from system_stm32f10x.c
+
 
 int fputc(int c, FILE *f)
 {
@@ -12,16 +14,17 @@ int fputc(int c, FILE *f)
     return c;
 }
 
+
 int main(void)
 {
 		SysInit();
+		//core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
+		//core.flexport = uartOpen(USART3, NULL, 9600, MODE_RXTX);
 	
-		core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
-		core.flexport = uartOpen(USART3, NULL, 9600, MODE_RXTX);
 		pwm_params.airplane=true;
-		pwm_params.motorPwmRate=4000;
-		pwm_params.servoPwmRate=500;
-		pwm_params.idlePulse = PULSE_1MS;
+		pwm_params.motorPwmRate=400;
+		pwm_params.servoPwmRate=50;
+		pwm_params.idlePulse = 1000;
 		pwm_params.useServos = true;
 		pwm_params.servoCenterPulse = 1500;
 		pwmInit(&pwm_params);
@@ -31,8 +34,10 @@ int main(void)
 		
 	while(1){
 		
-		printf("jin \r\n");
-		delay(20);
+		LED1_ON;
+		delay(1000);
+		LED1_OFF;
+		delay(1000);
 	}
 }
 			
