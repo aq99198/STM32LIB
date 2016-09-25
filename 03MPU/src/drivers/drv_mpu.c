@@ -89,9 +89,9 @@ static void mpu6050SelfTest(void);
 static void dummyInit(sensor_align_e align);
 static void dummyRead(int16_t *data);
 static void mpuAccInit(sensor_align_e align);
-static void mpuAccRead(int16_t *accData);
+//static void mpuAccRead(int16_t *accData);
 static void mpuGyroInit(sensor_align_e align);
-static void mpuGyroRead(int16_t *gyroData);
+//static void mpuGyroRead(int16_t *gyroData);
 
 typedef struct mpu_access_t {
     mpuReadRegPtr read;
@@ -112,7 +112,7 @@ static sensor_align_e accAlign = CW0_DEG;
 // Lowpass
 static uint8_t mpuLowPassFilter = INV_FILTER_42HZ;
 
-bool mpuDetect(sensor_t *acc, sensor_t *gyro, mpu_params_t *init)
+bool mpuDetect(sensor_t *acc, sensor_t *gyro)
 {
     bool ack, useSpi = false;
     uint8_t sig = 0, legacy = 0;
@@ -174,20 +174,9 @@ bool mpuDetect(sensor_t *acc, sensor_t *gyro, mpu_params_t *init)
     gyro->scale = (4.0f / 16.4f) * (M_PI / 180.0f) * 0.000001f;
 
     // default lpf is 42Hz, 255 is special case of nolpf
-    if (init->lpf == 255)
-        mpuLowPassFilter = INV_FILTER_256HZ_NOLPF2;
-    else if (init->lpf >= 188)
-        mpuLowPassFilter = INV_FILTER_188HZ;
-    else if (init->lpf >= 98)
-        mpuLowPassFilter = INV_FILTER_98HZ;
-    else if (init->lpf >= 42)
+ 
         mpuLowPassFilter = INV_FILTER_42HZ;
-    else if (init->lpf >= 20)
-        mpuLowPassFilter = INV_FILTER_20HZ;
-    else if (init->lpf >= 10)
-        mpuLowPassFilter = INV_FILTER_10HZ;
-    else
-        mpuLowPassFilter = INV_FILTER_5HZ;
+
 
     // MPU_INT output on rev5+ hardware (PC13). rev4 was on PB13, conflicts with SPI devices
 //    if (hw_revision >= NAZE32_REV5) {
@@ -206,7 +195,7 @@ bool mpuDetect(sensor_t *acc, sensor_t *gyro, mpu_params_t *init)
     // initialize the device
     mpu.init(acc, gyro);
     // return detected hardware
-    init->deviceType = hw;
+    //init->deviceType = hw;
 
     return true;
 }
@@ -338,7 +327,7 @@ static void mpuGyroInit(sensor_align_e align)
         gyroAlign = align;
 }
 
-static void mpuAccRead(int16_t *accData)
+void mpuAccRead(int16_t *accData)
 {
     uint8_t buf[6];
     int16_t data[3];
@@ -351,7 +340,7 @@ static void mpuAccRead(int16_t *accData)
     alignSensors(data, accData, accAlign);
 }
 
-static void mpuGyroRead(int16_t *gyroData)
+void mpuGyroRead(int16_t *gyroData)
 {
     uint8_t buf[6];
     int16_t data[3];

@@ -76,7 +76,9 @@ typedef struct sensor_t {
 
 #define LED0
 #define LED1
-
+#define I2C_DEVICE (I2CDEV_2)
+#define SOFT_I2C
+#define SOFT_I2C_PB1011
 
 #define LED0_GPIO   GPIOB
 #define LED0_PIN    Pin_3 // PB3 (LED)

@@ -6,6 +6,10 @@ drv_pwm_config_t pwm_params;
 uint16_t acc_1G = 256; 
 // from system_stm32f10x.c
 uint8_t sensorsOK;
+sensor_t acc;                       // acc access functions
+sensor_t gyro;                      // gyro access functions
+int16_t accData[3];
+int16_t gyroData[3];
 
 int fputc(int c, FILE *f)
 {
@@ -19,7 +23,8 @@ int main(void)
 {
 		SysInit();
 		core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
-		core.flexport = uartOpen(USART3, NULL, 9600, MODE_RXTX);
+		// USART3 =	 I2C 
+		//core.flexport = uartOpen(USART3, NULL, 9600, MODE_RXTX);
 	
 		pwm_params.airplane=true;
 		pwm_params.motorPwmRate=400;
@@ -31,15 +36,17 @@ int main(void)
 		pwmWriteServo(0,1500);
 		pwmWriteServo(1,1500);
 		pwmWriteServo(2,1500);
-	
+		i2cInit(I2C_DEVICE);
 	// drop out any sensors that don't seem to work, init all the others. halt if gyro is dead.
-    sensorsOK  = mpuDetect(&acc, &gyro, &mpu_config);
+    mpuDetect(&acc,&gyro);
 	
 	while(1){
-		
+		mpuAccRead(accData);
+		mpuGyroRead(gyroData);
+		printf("AX=%8d, AY=%8d, AZ=%8d, GX=%8d, GY=%8d, GZ=%8d \r\n",accData[0],accData[1],accData[2],gyroData[0],gyroData[1],gyroData[2]);	
 		LED1_TOGGLE;
 		//LED0_TOGGLE;
-		delay(1000);
+		delay(100);
 	}
 }
 			

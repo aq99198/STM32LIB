@@ -20,4 +20,6 @@ typedef struct mpu_params_t {
     mpu_hardware_e deviceType;  // Detection result
 } mpu_params_t;
 
-bool mpuDetect(sensor_t *acc, sensor_t *gyro, mpu_params_t *init);
+bool mpuDetect(sensor_t *acc, sensor_t *gyro);
+void mpuGyroRead(int16_t *gyroData);
+void mpuAccRead(int16_t *accData);
