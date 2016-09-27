@@ -48,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\obj\</OutputDirectory>
-          <OutputName>PWM</OutputName>
+          <OutputName>MPU3</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -461,6 +461,31 @@
               <FileName>drv_timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c_soft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c_soft.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_mpu.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1070,6 +1095,31 @@
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_timer.h</FilePath>
             </File>
+            <File>
+              <FileName>drv_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c_soft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c_soft.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_mpu.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1611,6 +1661,31 @@
               <FileName>drv_timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_i2c_soft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_i2c_soft.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_mpu.h</FilePath>
             </File>
           </Files>
         </Group>

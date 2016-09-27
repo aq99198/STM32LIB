@@ -19,23 +19,33 @@ int fputc(int c, FILE *f)
     return c;
 }
 
+
+void RCC_Configuration(void)
+{
+	int HSEStartUpStatus=0;
+  RCC_DeInit();
+  RCC_HSEConfig(RCC_HSE_ON);   
+  HSEStartUpStatus = RCC_WaitForHSEStartUp();
+  if(HSEStartUpStatus == SUCCESS)        
+  {   
+    RCC_HCLKConfig(RCC_SYSCLK_Div1); 
+    RCC_PCLK2Config(RCC_HCLK_Div1);   
+    RCC_PCLK1Config(RCC_HCLK_Div2);   
+    FLASH_SetLatency(FLASH_Latency_2);   
+    FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);    
+    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_6);    
+    RCC_PLLCmd(ENABLE);
+    while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET) ;    
+    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+    while(RCC_GetSYSCLKSource() != 0x08);     
+  }
+}
+
 int main(void)
 {
-		SysInit();
+	//RCC_Configuration();
+	SysInit();
 		core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
-		// USART3 =	 I2C 
-		//core.flexport = uartOpen(USART3, NULL, 9600, MODE_RXTX);
-	
-		pwm_params.airplane=true;
-		pwm_params.motorPwmRate=400;
-		pwm_params.servoPwmRate=50;
-		pwm_params.idlePulse = 1000;
-		pwm_params.useServos = true;
-		pwm_params.servoCenterPulse = 1500;
-		pwmInit(&pwm_params);
-		pwmWriteServo(0,1500);
-		pwmWriteServo(1,1500);
-		pwmWriteServo(2,1500);
 		i2cInit(I2C_DEVICE);
 	// drop out any sensors that don't seem to work, init all the others. halt if gyro is dead.
     mpuDetect(&acc,&gyro);
