@@ -7,6 +7,7 @@ drv_pwm_config_t pwm_params;
 uint8_t sensorsOK;
 sensor_t acc;                       // acc access functions
 sensor_t gyro;                      // gyro access functions
+extern float deltaGyroAngle[3];
 
 
 int fputc(int c, FILE *f)
@@ -30,9 +31,8 @@ int main(void)
 	while(1){
 		computeIMU();
 		//printf("AX=%8d, AY=%8d \r\n",accADC[0],accADC[1]);
-		printf("ROLL=%8d, PITCH=%8d \r\n",angle[0],angle[1]);	
+		printf("ROLL=%8d, PITCH=%8d \r\n",angle[0]/10,angle[1]/10);	
 		LED1_TOGGLE;
-		//LED0_TOGGLE;
 		delay(100);
 	}
 }

@@ -8,6 +8,7 @@ extern int16_t angle[2];
 extern int16_t gyroADC[3], accADC[3], accSmooth[3], magADC[3];
 extern int16_t gyroData[3];
 
+
 enum {
     ROLL = 0,
     PITCH,

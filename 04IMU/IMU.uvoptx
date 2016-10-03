@@ -178,7 +178,7 @@
           <Type>0</Type>
           <LineNumber>294</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220466</Address>
+          <Address>134220478</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -188,6 +188,22 @@
           <Filename>D:\04project\01椋炴帶\11baseflight\STM32LIB\04IMU\src\imu.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\MPU\src/imu.c\294</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>279</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134220398</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\04project\01椋炴帶\11baseflight\STM32LIB\04IMU\src\imu.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\MPU\src/imu.c\279</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

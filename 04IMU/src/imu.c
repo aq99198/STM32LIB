@@ -25,7 +25,7 @@ float magneticDeclination = 0.0f;       // calculated at startup from config
 float accVelScale;
 float throttleAngleScale;
 float fc_acc;
-
+float scale, deltaGyroAngle[3];
 // **************
 // gyro+acc IMU
 // **************
@@ -258,7 +258,7 @@ static void getEstimatedAttitude(void)
     static uint32_t previousT;
     uint32_t currentT = micros();
     uint32_t deltaT;
-    float scale, deltaGyroAngle[3];
+    
     deltaT = currentT - previousT;
     scale = deltaT * 4.25690105e-09;
     previousT = currentT;
@@ -282,8 +282,8 @@ static void getEstimatedAttitude(void)
     // If accel magnitude >1.15G or <0.85G and ACC vector outside of the limit range => we neutralize the effect of accelerometers in the angle estimation.
     // To do that, we just skip filter, as EstV already rotated by Gyro
 //    if (72 < (uint16_t)accMag && (uint16_t)accMag < 133) {
-//        for (axis = 0; axis < 3; axis++)
-//            EstG.A[axis] = (EstG.A[axis] * (float)mcfg.gyro_cmpf_factor + accSmooth[axis]) * INV_GYR_CMPF_FACTOR;
+        for (axis = 0; axis < 3; axis++)
+            EstG.A[axis] = (EstG.A[axis] * (float)600 + accSmooth[axis]) * 0.00166389346;
 //    }
 
     //f.SMALL_ANGLE = (EstG.A[Z] > smallAngle);
