@@ -137,7 +137,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -396,16 +396,6 @@
               <FileName>init.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
-            </File>
-            <File>
-              <FileName>sbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\sbus.c</FilePath>
-            </File>
-            <File>
-              <FileName>sbus.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\sbus.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -990,16 +980,6 @@
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
             </File>
-            <File>
-              <FileName>sbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\sbus.c</FilePath>
-            </File>
-            <File>
-              <FileName>sbus.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\sbus.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1516,16 +1496,6 @@
               <FileName>init.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
-            </File>
-            <File>
-              <FileName>sbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\sbus.c</FilePath>
-            </File>
-            <File>
-              <FileName>sbus.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\sbus.h</FilePath>
             </File>
           </Files>
         </Group>

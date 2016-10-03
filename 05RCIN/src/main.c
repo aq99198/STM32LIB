@@ -14,6 +14,8 @@ int fputc(int c, FILE *f)
     return c;
 }
 bool rcReady=false;
+
+
 int main(void)
 {
 		SysInit();
@@ -21,7 +23,8 @@ int main(void)
 		core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
 	while(1){
 		rcReady = sbusFrameComplete();
-		printf("reReady = %d \r\n",(uint16_t)(0.625f*sbusChannelData[0]+880));
+		if(rcReady)
+			printf("reReady = %d \r\n",(uint16_t)(0.625f*sbusChannelData[0]+880));
 		rcReady = false;
 		LED0_TOGGLE;
 		delay(20);

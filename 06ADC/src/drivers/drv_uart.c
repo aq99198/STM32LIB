@@ -160,7 +160,6 @@ serialPort_t *uartOpen(USART_TypeDef *USARTx, serialReceiveCallbackPtr callback,
 {
     DMA_InitTypeDef DMA_InitStructure;
     USART_InitTypeDef USART_InitStructure;
-		USART_ClockInitTypeDef USART_ClockInitStruct;
 
     uartPort_t *s = NULL;
 
@@ -187,10 +186,8 @@ serialPort_t *uartOpen(USART_TypeDef *USARTx, serialReceiveCallbackPtr callback,
     USART_InitStructure.USART_BaudRate = baudRate;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     if (mode & MODE_SBUS) {
-			//  
         USART_InitStructure.USART_StopBits = USART_StopBits_2;
         USART_InitStructure.USART_Parity = USART_Parity_Even;
-	
     } else {
         USART_InitStructure.USART_StopBits = USART_StopBits_1;
         USART_InitStructure.USART_Parity = USART_Parity_No;
