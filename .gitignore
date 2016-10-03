@@ -9,6 +9,7 @@
 .cproject
 .tags
 .tags_sorted_by_file
+.zip
 obj/
 patches/
 startup_stm32f10x_md_gcc.s
