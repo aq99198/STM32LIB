@@ -442,16 +442,6 @@
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
             </File>
-            <File>
-              <FileName>drv_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drivers\drv_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\drivers\drv_adc.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1035,16 +1025,6 @@
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
             </File>
-            <File>
-              <FileName>drv_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drivers\drv_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\drivers\drv_adc.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1561,16 +1541,6 @@
               <FileName>drv_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
-            </File>
-            <File>
-              <FileName>drv_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drivers\drv_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\drivers\drv_adc.h</FilePath>
             </File>
           </Files>
         </Group>
