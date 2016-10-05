@@ -232,6 +232,7 @@ void serialInit(uint32_t baudrate)
 static void evaluateCommand(void)
 {
     uint32_t i, j, tmp, junk;
+		static int pitch=0,roll=0;
 #ifdef GPS
     uint8_t wp_no;
     int32_t lat = 0, lon = 0, alt = 0;
@@ -239,10 +240,113 @@ static void evaluateCommand(void)
     const char *build = __DATE__;
 
     switch (currentPortState->cmdMSP) {
+				case MSP_ACC_TRIM:
+							headSerialReply(4);
+							serialize16(0);
+							serialize16(0);
+							break;
+			
+			case MSP_CONFIG:
+            headSerialReply(1 + 4 + 1 + 2 + 2 + 2 + 2 + 2 + 2 + 2 + 1 + 1 + 2 + 1);
+            serialize8(0);
+            serialize32(0);
+            serialize8(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize16(0);
+            serialize8(0);
+            /// ???
+            break;
+			
+			 case MSP_MISC:
+            headSerialReply(2 * 6 + 4 + 2 + 4);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize16(0); // TODO check this shit
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            serialize8(0);
+            break;
+			 
+			 case MSP_ATTITUDE:
+            headSerialReply(6);
+            
+            serialize16(pitch+=5);
+						serialize16(roll+=5);
+            serialize16(0);
+						if(pitch>=2048) pitch =0;
+						if(roll>=2048) roll =0;
+            break;
+			 
+			 
+			 
+			 case MSP_ANALOG:  //110
+            headSerialReply(7);
+            serialize8(0);
+            serialize16(0); // milliamphours drawn from battery
+            serialize16(0);
+            
+            serialize16(0); // send amperage in 0.001 A steps
+          
+            break;
+			
+			 
+			  case MSP_RAW_GPS:
+            headSerialReply(16);
+            serialize8(0);
+            serialize8(0);
+            serialize32(0);
+            serialize32(0);
+            serialize16(0);
+            serialize16(0);
+            serialize16(0);
+            break;
+        case MSP_COMP_GPS:
+            headSerialReply(5);
+            serialize16(0);
+            serialize16(0);
+            serialize8(0);
+            break;
+				
+				 case MSP_STATUS:
+            headSerialReply(11);
+            serialize16(0);
+            serialize16(4);
+            serialize16(1 | 1 << 1 | 1 << 2 | 0 << 3 | 1 << 4);
+            // OK, so you waste all the fucking time to have BOXNAMES and BOXINDEXES etc, and then you go ahead and serialize enabled shit simply by stuffing all
+            // the bits in order, instead of setting the enabled bits based on BOXINDEX. WHERE IS THE FUCKING LOGIC IN THIS, FUCKWADS.
+            // Serialize the boxes in the order we delivered them, until multiwii retards fix their shit
+            junk = 0;
+           
+            serialize32(junk);
+            serialize8(0);
+            break;
+				
+				
+			
+			
         case MSP_IDENT:
             headSerialReply(7);
             serialize8(VERSION);                    // multiwii version
-            serialize8(0);    // type of multicopter
+            serialize8(2);    // type of multicopter
             serialize8(MSP_VERSION);                // MultiWii Serial Protocol Version
             serialize32(CAP_PLATFORM_32BIT | CAP_BASEFLIGHT_CONFIG | CAP_DYNBALANCE | CAP_FW_FLAPS); // "capability"
             break;

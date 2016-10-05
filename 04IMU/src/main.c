@@ -14,7 +14,7 @@ int fputc(int c, FILE *f)
 {
     // let DMA catch up a bit when using set or dump, we're too fast.
     //while (!serialTotalBytesWaiting(core.mainport));
-    serialWrite(core.mainport, c);
+    //serialWrite(core.mainport, c);
     return c;
 }
 
@@ -22,16 +22,18 @@ int main(void)
 {
 
 		SysInit();
-		core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
+		//core.mainport = uartOpen(USART1, NULL, 9600, MODE_RXTX);
 		i2cInit(I2C_DEVICE);
 	// drop out any sensors that don't seem to work, init all the others. halt if gyro is dead.
     mpuDetect(&acc,&gyro);
 		imuInit();
+		serialInit(115200);
 	
 	while(1){
 		computeIMU();
 		//printf("AX=%8d, AY=%8d \r\n",accADC[0],accADC[1]);
-		printf("ROLL=%8d, PITCH=%8d \r\n",angle[0]/10,angle[1]/10);	
+		//printf("ROLL=%8d, PITCH=%8d \r\n",angle[0]/10,angle[1]/10);	
+		serialCom();
 		LED1_TOGGLE;
 		delay(100);
 	}

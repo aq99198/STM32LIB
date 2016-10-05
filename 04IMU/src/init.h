@@ -38,3 +38,5 @@ void annexCode(void);
 void computeIMU(void);
 void blinkLED(uint8_t num, uint8_t wait, uint8_t repeat);
 int getEstimatedAltitude(void);
+void serialInit(uint32_t baudrate);
+void serialCom(void);

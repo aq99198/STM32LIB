@@ -14,7 +14,7 @@ int main(void)
 	while(1){
 		serialCom();
 		LED0_TOGGLE;
-		delay(20);
+		delay(1);
 	}
 }
 			
