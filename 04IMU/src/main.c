@@ -35,7 +35,7 @@ int main(void)
 		//printf("ROLL=%8d, PITCH=%8d \r\n",angle[0]/10,angle[1]/10);	
 		serialCom();
 		LED1_TOGGLE;
-		delay(100);
+		delay(10);
 	}
 }
 			
