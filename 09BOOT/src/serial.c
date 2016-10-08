@@ -373,10 +373,45 @@ static void evaluateCommand(void)
     tailSerialReply();
 }
 
+
+void rccWriteBkpDr(uint32_t value)
+{
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+    PWR->CR |= PWR_CR_DBP;
+
+    *((uint16_t *)BKP_BASE + 0x04) = value & 0xffff;
+    *((uint16_t *)BKP_BASE + 0x08) = (value & 0xffff0000) >> 16;
+}
+
+#define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
+
+#define BKP_SOFTRESET (0x50F7B007)
+
+void systemReset(bool toBootloader)
+{
+    if (toBootloader) {
+        // 1FFFF000 -> 20000200 -> SP
+        // 1FFFF004 -> 1FFFF021 -> PC
+        *((uint32_t *)0x20004FF0) = 0xDEADBEEF; // 20KB STM32F103   0x20004FF0==19kb
+    }
+
+    // write magic value that we're doing a soft reset
+    rccWriteBkpDr(BKP_SOFTRESET);
+
+    // Generate system reset
+    SCB->AIRCR = AIRCR_VECTKEY_MASK | (uint32_t)0x04;
+}
+
+
+
 // evaluate all other incoming serial data
 static void evaluateOtherData(uint8_t sr)
 {
-   
+    if (sr == '#')
+        //cliProcess();
+			;
+    else if (sr == 'R')
+        systemReset(true);      // reboot to bootloader
 }
 
 void serialCom(void)
@@ -387,7 +422,8 @@ void serialCom(void)
 
         currentPortState = &ports[0];
 
-        // in cli mode, all serial stuff goes to here. enter cli mode by sending #
+         // in cli mode, all serial stuff goes to here. enter cli mode by sending #
+       //
   
 
         while (serialTotalBytesWaiting(currentPortState->port)) {
