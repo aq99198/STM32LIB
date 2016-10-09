@@ -48,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\obj\</OutputDirectory>
-          <OutputName>BOOT</OutputName>
+          <OutputName>EEPROM</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -396,11 +396,6 @@
               <FileName>init.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
-            </File>
-            <File>
-              <FileName>serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\serial.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -985,11 +980,6 @@
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
             </File>
-            <File>
-              <FileName>serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\serial.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1506,11 +1496,6 @@
               <FileName>init.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\init.h</FilePath>
-            </File>
-            <File>
-              <FileName>serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\serial.c</FilePath>
             </File>
           </Files>
         </Group>
