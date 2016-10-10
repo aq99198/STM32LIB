@@ -70,6 +70,7 @@ typedef void (*serialReceiveCallbackPtr)(uint16_t data);   // used by serial dri
 
 #include "drv_serial.h"
 #include "drv_uart.h"
+#include "drv_eeprom.h"
 
 
 // Helpful macros

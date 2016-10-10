@@ -442,6 +442,16 @@
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
             </File>
+            <File>
+              <FileName>drv_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_eeprom.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1025,6 +1035,16 @@
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
             </File>
+            <File>
+              <FileName>drv_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_eeprom.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1541,6 +1561,16 @@
               <FileName>drv_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\drivers\drv_uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>drv_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_eeprom.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drivers\drv_eeprom.h</FilePath>
             </File>
           </Files>
         </Group>
