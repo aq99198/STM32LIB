@@ -1,5 +1,7 @@
 #include "board.h"
+#include "uartdriver.h"
 #include "debugTask.h"
+#include "ucloudTask.h"
 #include "ubloxTask.h"
 
 void App_Task0();
@@ -9,6 +11,7 @@ int main(void)
 			bsp_init();
 			USART1_Init();
 			USART2_Init();
+			UART5_Init();
 	
       OSInit();
 
@@ -56,32 +59,29 @@ void App_Task0()
 	
 	OS_STK_DATA StackBytes;
 	
+		
+	SerialConsole = new CUartDriver(USART1_IDX);
+	
+	
 	DebugTask *debugTask = DebugTask::GetInstance();
   debugTask->Run();
 	
 	CUbloxGPS * gps = CUbloxGPS::GetInstance();
-  gps->Run();
+  //gps->Run();
+	
+	Ucloud *server = Ucloud::getIntance();
+  server->Run();
+	
 	
 	// 
-	SerialConsole = new CUartDriver(USART1_IDX);
+
 	
 	while(1)
 	{
 		
-			//UART1_send_byte('a');
 		
-	
-				//DEBUG("it work!\r\n");
-				//ERROR("sessed!\r\n");
 		
-//			OSSemPend(SemUartW1,0,&g_u8Rerr);
-			  USART2_DMA(p, 5);
-//			OSSemPend(SemUartW1,0,&g_u8Rerr);
-//			USART1_DMA(p2, 5);
-//			OSTaskStkChk(APP_TASK_START_PRIO, &StackBytes);
-//			printf("StackBytes.OSFree=%d\t StackBytes.OSUsed=%d\r\n",StackBytes.OSFree,StackBytes.OSUsed);
-//			//printf("word");
-		
+		printf("printTest\r\n");
 		
 			OSTimeDly(30);
 			//LED0_TOGGLE;

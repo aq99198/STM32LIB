@@ -23,7 +23,7 @@ void USART_gpio(void){
 		GPIO_Init(GPIOA, &GPIO_InitStructure);
 		#endif
 	
-	
+		#ifdef USART2_ON
 		/* Configure USART2 Tx (PA2) as alternate function push-pull */
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -35,7 +35,7 @@ void USART_gpio(void){
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 		GPIO_Init(GPIOA, &GPIO_InitStructure);
-
+		#endif
 	
 		#ifdef USART3_ON
 		/* USART3 ?? Tx(PC12) Rx(PD2)*/
@@ -342,24 +342,74 @@ void DMA1_Channel7_IRQHandler(void)
 }
 
 
+void USART1_IRQHandler(void)
+{
+	
+	 if (USART_GetFlagStatus(USART1, USART_FLAG_ORE) != RESET)  
+   {  
+       USART_ReceiveData(USART1);  
+			 USART_ClearFlag(USART1, USART_FLAG_ORE);  
+   }  
+	
+	 if (USART_GetFlagStatus(USART1, USART_FLAG_PE) != RESET)  
+   {  
+     USART_ClearFlag(USART1, USART_FLAG_PE);  
+   }  
+	 
+	 if(USART_GetFlagStatus(USART1, USART_FLAG_NE) != RESET)
+	 {
+			USART_ClearFlag(USART1, USART_FLAG_NE);
+	 }
+
+      
+   if (USART_GetFlagStatus(USART1, USART_FLAG_FE) != RESET)  
+   {  
+      USART_ClearFlag(USART1, USART_FLAG_FE);  
+   }  
+	
+	
+	 if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET)//判断是不是接收中断
+	 {
+		UART1_Buffer.buffer[UART1_Buffer.end++]= USART_ReceiveData(USART1);
+		UART1_Buffer.end &= 0xFF;
+		if(SemUart1 != OS_EVENT_NULL)
+		{
+				OSSemPost(SemUart1);
+		}
+
+		USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+	 }else{
+		USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+		USART_ClearITPendingBit(USART1,USART_IT_CTS);
+		USART_ClearITPendingBit(USART1,USART_IT_LBD);
+		USART_ClearITPendingBit(USART1,USART_IT_TC);
+	 }
+}
+
+
+
 void USART2_IRQHandler(void)
 {
 	
+	 if (USART_GetFlagStatus(USART2, USART_FLAG_ORE) != RESET)  
+   {  
+       USART_ReceiveData(USART2);  
+			 USART_ClearFlag(USART2, USART_FLAG_ORE);  
+   }  
+	
 	 if (USART_GetFlagStatus(USART2, USART_FLAG_PE) != RESET)  
    {  
-       USART_ReceiveData(USART2);  
      USART_ClearFlag(USART2, USART_FLAG_PE);  
    }  
+	 
+	 if(USART_GetFlagStatus(USART2, USART_FLAG_NE) != RESET)
+	 {
+			USART_ClearFlag(USART2, USART_FLAG_NE);
+	 }
+
       
-   if (USART_GetFlagStatus(USART2, USART_FLAG_ORE) != RESET)  
+   if (USART_GetFlagStatus(USART2, USART_FLAG_FE) != RESET)  
    {  
-       USART_ReceiveData(USART2);  
-     USART_ClearFlag(USART2, USART_FLAG_ORE);  
-   }  
-      
-    if (USART_GetFlagStatus(USART2, USART_FLAG_FE) != RESET)  
-   {  
-       USART_ReceiveData(USART2);  
       USART_ClearFlag(USART2, USART_FLAG_FE);  
    }  
 	
@@ -382,6 +432,50 @@ void USART2_IRQHandler(void)
 	 }
 }
 
+
+void UART5_IRQHandler(void)
+{
+	
+	 if (USART_GetFlagStatus(UART5, USART_FLAG_ORE) != RESET)  
+   {  
+       USART_ReceiveData(UART5);  
+			 USART_ClearFlag(UART5, USART_FLAG_ORE);  
+   }  
+	
+	 if (USART_GetFlagStatus(UART5, USART_FLAG_PE) != RESET)  
+   {  
+     USART_ClearFlag(UART5, USART_FLAG_PE);  
+   }  
+	 
+	 if(USART_GetFlagStatus(UART5, USART_FLAG_NE) != RESET)
+	 {
+			USART_ClearFlag(UART5, USART_FLAG_NE);
+	 }
+
+      
+   if (USART_GetFlagStatus(UART5, USART_FLAG_FE) != RESET)  
+   {  
+      USART_ClearFlag(UART5, USART_FLAG_FE);  
+   }  
+	
+	
+	 if(USART_GetITStatus(UART5, USART_IT_RXNE) == SET)//判断是不是接收中断
+	 {
+		UART5_Buffer.buffer[UART5_Buffer.end++]= USART_ReceiveData(UART5);
+		UART5_Buffer.end &= 0xFF;
+		if(SemUart5 != OS_EVENT_NULL)
+		{
+				OSSemPost(SemUart5);
+		}
+
+		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
+	 }else{
+		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
+		USART_ClearITPendingBit(UART5,USART_IT_CTS);
+		USART_ClearITPendingBit(UART5,USART_IT_LBD);
+		USART_ClearITPendingBit(UART5,USART_IT_TC);
+	 }
+}
 
 
 
@@ -440,5 +534,7 @@ void UART2_Send(uint8_t *Buffer, uint32_t Length)
 		Length--;
 	}
 }
+
+
 
 

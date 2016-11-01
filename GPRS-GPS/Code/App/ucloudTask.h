@@ -1,6 +1,4 @@
 
-
-
 #ifndef __UCLOUD__H
 #define __UCLOUD__H
 

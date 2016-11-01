@@ -2,9 +2,14 @@
 
 
 void bsp_init(){
+	
 	RCC_Configuration();
+	
 	led_gpio_init();
+	
 	USART_gpio();
+	
+	ExitSleepMode_SIM900A();
 }
 
 
@@ -15,7 +20,7 @@ void RCC_Configuration(void)
 	SystemInit();
 	
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+	//RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 	
 	/* Enable GPIOA and USART1 clocks */
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA | 
@@ -43,6 +48,23 @@ void led_gpio_init(){
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 		GPIO_Init(LED0_GPIO, &GPIO_InitStructure);
+}
 
+
+/* PB4 Logical Low */
+void ExitSleepMode_SIM900A(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	GPIO_StructInit(&GPIO_InitStructure);
+	
+	/* Power on for external crystal oscillator. */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	GPIOB->BRR = GPIO_Pin_4;
 }
 

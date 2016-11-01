@@ -64,12 +64,9 @@ extern CUartDriver * SerialConsole ;
 #define DEBUG_INFO   
 #ifdef  DEBUG_INFO
 
-		#define INFO(x)            do{SerialConsole->write((uint8_t*)"[INFO]  ",9); \
-																	 SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
-    #define ERROR(x)            do{SerialConsole->write((uint8_t*)"[ERROR]  ",7); \
-																	 SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
-    #define DEBUG(x)            do{SerialConsole->write((uint8_t*)"[DEBUG]  ",7); \
-																	 SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
+		#define INFO(x)            	do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
+    #define ERROR(x)            do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
+    #define DEBUG(x)            do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
 		#define PRINT(format,args...) printf(format,##args)
 
 #else

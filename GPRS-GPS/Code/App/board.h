@@ -16,6 +16,7 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
 #include "stm32f10x_dma.h"
+#include "stm32f10x_flash.h"
 #include "misc.h"
 
 
@@ -30,6 +31,9 @@ typedef float FLOAT32 ;
 #include "Global.h"
 #include "ucos_ii.h"
 #include "ublox_ubx.h"
+#include "jacTypeDef.h"
+#include "UcloudMsgTypeDef.h"
+#include "ProtocolDef.h"
 
 
 #ifndef __CC_ARM
@@ -42,6 +46,7 @@ typedef float FLOAT32 ;
 
 #include "usart.h"
 #include "bsp.h"
+#include "system.h"
 
 
 
@@ -62,7 +67,7 @@ typedef float FLOAT32 ;
 #define BEEP
 #define USART1_ON
 #define USART2_ON
-#define USART5_ON
+#define UART5_ON
 #define USART_DMA 1
 
 #define digitalHi(p, i)     { p->BSRR = i; }

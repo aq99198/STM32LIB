@@ -2,6 +2,7 @@
 @brief this file`s aim is that definition the global variables
 */
 
+#include "board.h"
 #include "Global.h"
 /************************ the global varisbles ***************************/
            // the cradle heading configuration information buffer
@@ -28,6 +29,14 @@ OS_EVENT            *MutexUartW5;
 OS_EVENT            *SemGprsLinkConnected;
 
 
+
+INT32U JCLOUD_APID = 0;//0xABCD0001;
+INT32U JCLOUD_GSMID = 0;//0x00000002;
+INT32U JCLOUD_IP = 0;
+INT16U JCLOUD_PORT = 0;
+INT32U LedMode = 0;
+
+
 //__align(8) OS_STK		App_Task_APLINKTX_Stack[APP_TASK_APLINKTX_STK_SIZE];
 __align(8) OS_STK		App_Task_APLINKRX_Stack[APP_TASK_APLINKRX_STK_SIZE];
 __align(8) OS_STK		App_Task_START_Stack[APP_TASK_START_STK_SIZE];
@@ -42,6 +51,8 @@ __align(8) OS_STK		App_Task_RECORD_COM_Stack[APP_TASK_RECORD_COM_STK_SIZE];
 __align(8) OS_STK		App_DebugTask1Stack[APP_DebugTASK1_STK_SIZE];
 __align(8) OS_STK		App_DebugTask2Stack[APP_DebugTASK2_STK_SIZE];
 __align(8) OS_STK		App_DebugTask3Stack[APP_DebugTASK3_STK_SIZE];
+
+
 
 
 /* end of file */

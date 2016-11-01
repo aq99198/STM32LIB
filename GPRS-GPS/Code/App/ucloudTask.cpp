@@ -1,14 +1,7 @@
-#include "Ucloud.h"
-#include "Global.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include "APlink.h"
-#include "Ublox5.h"
-#include "BSP.h"
-#include "Protocol.h"
-#include "demo.h"
-#include "adc.h"
+#include "board.h"
+#include "uartdriver.h"
+#include "ubloxTask.h"
+#include "ucloudTask.h"
 
 
 static UINT8 RxTaskQuitFlag = 0;
@@ -110,7 +103,7 @@ Ucloud * Ucloud::inStance=0;
 
 Ucloud::Ucloud()
 {
-    gprs = GPRS::getInstance();
+  gprs = GPRS::getInstance();
 	m_bConnect = false;
 	m_uLatestTime_ms = 0;
 	SemGprsLinkConnected = OSSemCreate(0);
@@ -282,7 +275,6 @@ void Ucloud::RcvLoop()
 	JCLOUD_MSG_PACK ServerPackt;
 	INT32 ret;
 	
-	CAPlink *ap = CAPlink::GetInstance();
 	CUbloxGPS * gps = CUbloxGPS::GetInstance();
 
 	while(1)

@@ -123,16 +123,10 @@ void CUartDriver::write(u8 *data, int dataLen)
 			break;
 			
 		case UART5_IDX:
-			#if USART_DMA
-				OSSemPend(SemUartW5, 0, &g_u8Rerr);
-				//UART5_DMA(data,dataLen);
-			#else
 				for(i=0;i<dataLen;++i)
 				{
-					while(!((UART5->SR)&(1<<7)));
-					UART5->DR=data[i];	
+					UART5_send_byte(data[i]);
 				}
-			#endif
 			break;
 		}
 }

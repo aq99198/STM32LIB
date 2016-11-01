@@ -61,6 +61,7 @@ label:
 
 #if 1
 #define PRINTF_USART_PORT USART1
+
 int SendChar (int ch)
 {
 	#if 0
@@ -70,7 +71,6 @@ int SendChar (int ch)
 		while (!(PRINTF_USART_PORT->SR & USART_FLAG_TXE)); 
     PRINTF_USART_PORT->DR = (ch & 0x1FF);
 	#endif
-	
 	
     return (ch);
 }

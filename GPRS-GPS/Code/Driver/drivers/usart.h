@@ -34,7 +34,11 @@ void UART2_Send(uint8_t *Buffer, uint32_t Length);
 void DMA1_Channel4_IRQHandler(void);
 void DMA1_Channel6_IRQHandler(void);
 
+
+void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
+void USART3_IRQHandler(void);
+void UART5_IRQHandler(void);
 void USART2_SetBaudRate(int bd);
 
 #ifdef  __cplusplus
@@ -45,13 +49,13 @@ void USART2_SetBaudRate(int bd);
     extern "C" Ring_BufferTypeDef UART1_Buffer;
     extern "C" Ring_BufferTypeDef UART2_Buffer;
     extern "C" Ring_BufferTypeDef UART3_Buffer;
-	extern "C" Ring_BufferTypeDef UART5_Buffer;
+		extern "C" Ring_BufferTypeDef UART5_Buffer;
     extern "C"{
 #else
     extern Ring_BufferTypeDef UART1_Buffer;
     extern Ring_BufferTypeDef UART2_Buffer;
     extern Ring_BufferTypeDef UART3_Buffer;
-	extern Ring_BufferTypeDef UART5_Buffer;
+		extern Ring_BufferTypeDef UART5_Buffer;
 #endif
 
 #ifdef __cplusplus

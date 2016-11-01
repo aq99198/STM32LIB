@@ -2,12 +2,9 @@
  * sim900a.cpp
  */
 
+#include "board.h"
+#include "uartdriver.h"
 #include "sim900a.h"
-#include "ucos_ii.h"
-#include "stm32f10x_gpio.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /*****************************************************/
 #define SIM900A_PWRKEY_GPIO_PORT    (GPIOB)

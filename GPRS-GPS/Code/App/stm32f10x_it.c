@@ -66,16 +66,6 @@ void SysTick_Handler(void)
 }  
 
 
-void USART1_IRQHandler(void)
-{
-
-}
-
-
-
-
-
-
 
 void NMI_Handler(void)
 {

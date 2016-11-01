@@ -8,6 +8,9 @@
 void bsp_init(void);
 void led_gpio_init(void);
 void RCC_Configuration(void);
+void ExitSleepMode_SIM900A(void);
+			
+			
 #ifdef __cplusplus
     }
 #endif

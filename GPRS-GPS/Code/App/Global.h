@@ -26,6 +26,14 @@ extern  INT8U                g_u8Rerr;          // the error code for create EVE
 
 
 
+// 这个放在这个位置价值不大
+extern INT32U JCLOUD_APID;
+extern INT32U JCLOUD_GSMID;
+extern INT32U JCLOUD_IP;
+extern INT16U JCLOUD_PORT;
+extern INT32U LedMode;
+
+
 /************************ the global Function ***************************/
 
 

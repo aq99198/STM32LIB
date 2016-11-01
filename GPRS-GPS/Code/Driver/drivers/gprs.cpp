@@ -2,12 +2,9 @@
  * gprs.cpp
  */
 
-#include <stdio.h>
+#include "board.h"
+#include "uartdriver.h"
 #include "gprs.h"
-#include <string.h>
-#include <stdlib.h>
-#include "Global.h"
-#include "APlink.h"
 
 GPRS * GPRS::inStance = 0 ;
 

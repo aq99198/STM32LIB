@@ -281,16 +281,10 @@ void  CUbloxGPS::TaskLoop()
             {
 								 case 0x07: 
 									{
-										DEBUG("GPS\r\n");
-											//PRINT("Send GSM TIME:%d\r\n",timerEnd_Count- timerStart_Count);
+										UBX_MSG_NAV_PVT ubx_pvt;
+										memcpy(&ubx_pvt,src,pckt_main.head.len);
+										// logic
 									}
-                break;
-                case 0x20:
-                {
-										//UBX_MSG_NAV_TIMEGPS  *REV_MSG_DATA_time;
-                    //REV_MSG_DATA_time = (UBX_MSG_NAV_TIMEGPS*)(&pckt_main.data);
-									  DEBUG("unknown ublox msg2\r\n");
-                }
                 break;
                 default:
 									DEBUG("unknown ublox msg\r\n");
