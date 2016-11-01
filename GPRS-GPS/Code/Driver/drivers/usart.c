@@ -1,5 +1,9 @@
 #include "board.h"
 
+Ring_BufferTypeDef UART1_Buffer;
+Ring_BufferTypeDef UART2_Buffer;
+Ring_BufferTypeDef UART3_Buffer;
+Ring_BufferTypeDef UART5_Buffer;
 
 void USART_gpio(void){
 		GPIO_InitTypeDef GPIO_InitStructure;
@@ -20,7 +24,6 @@ void USART_gpio(void){
 		#endif
 	
 	
-		#ifdef USART2_ON
 		/* Configure USART2 Tx (PA2) as alternate function push-pull */
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -32,7 +35,7 @@ void USART_gpio(void){
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 		GPIO_Init(GPIOA, &GPIO_InitStructure);
-		#endif
+
 	
 		#ifdef USART3_ON
 		/* USART3 ?? Tx(PC12) Rx(PD2)*/
@@ -125,9 +128,22 @@ void USART1_Init(void)
  	NVIC_Init(&NVIC_InitStructure);
 }
 
+void USART2_SetBaudRate(int bd){
+	USART_InitTypeDef USART_InitStructure;
+
+	//config USART2
+	USART_InitStructure.USART_BaudRate = bd;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No ;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_Init(USART2, &USART_InitStructure);
+}
+
 
 // for GPS
-void USART2_Init(int baud)
+void USART2_Init(void)
 {
 	USART_InitTypeDef USART_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -135,18 +151,18 @@ void USART2_Init(int baud)
 
   USART_Cmd(USART2, DISABLE);
 
-	//config USART1  for Debug and FC
-	USART_InitStructure.USART_BaudRate = 115200;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No ;
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init(USART1, &USART_InitStructure);
-	USART_ITConfig(USART1,USART_IT_RXNE,ENABLE); //使能中断
+	//config USART2
+	USART_InitStructure.USART_BaudRate = 9600;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No ;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_Init(USART2, &USART_InitStructure);
+	USART_ITConfig(USART2,USART_IT_RXNE,ENABLE); //使能中断
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -155,9 +171,9 @@ void USART2_Init(int baud)
 	USART_Cmd(USART2, ENABLE);
 
 
-	DMA_Cmd(DMA1_Channel6, ENABLE);
+	DMA_Cmd(DMA1_Channel7, ENABLE);
 
-	DMA_DeInit(DMA1_Channel6);
+	DMA_DeInit(DMA1_Channel7);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (unsigned int)&USART2->DR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = 0;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
@@ -170,19 +186,20 @@ void USART2_Init(int baud)
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;	
 
-	DMA_Init(DMA1_Channel6, &DMA_InitStructure);      
+	DMA_Init(DMA1_Channel7, &DMA_InitStructure);      
 
 	USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
 
-	DMA_ITConfig(DMA1_Channel6, DMA_IT_TC, ENABLE);
+	DMA_ITConfig(DMA1_Channel7, DMA_IT_TC, ENABLE);
 	
-	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel6_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel7_IRQn;
  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
  	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
  	NVIC_Init(&NVIC_InitStructure);
 
 }
+
 
 
 
@@ -286,14 +303,16 @@ void USART1_DMA(unsigned char *data , int len)
 	DMA1_Channel4->CCR |= 0x00000001;
 	DMA_Cmd(DMA1_Channel4, ENABLE);
 }
+
+
 void USART2_DMA(unsigned char * data , int len)
 {
-	DMA_Cmd(DMA1_Channel6, DISABLE);
-	DMA1_Channel6->CCR &= ~0x00000001;
-	DMA1_Channel6->CMAR = (UINT32)data;
-	DMA1_Channel6->CNDTR = len;
-	DMA1_Channel6->CCR |= 0x00000001;
-	DMA_Cmd(DMA1_Channel6, ENABLE);
+	DMA_Cmd(DMA1_Channel7, DISABLE);
+	DMA1_Channel7->CCR &= ~0x00000001;
+	DMA1_Channel7->CMAR = (UINT32)data;
+	DMA1_Channel7->CNDTR = len;
+	DMA1_Channel7->CCR |= 0x00000001;
+	DMA_Cmd(DMA1_Channel7, ENABLE);
 }
 
 
@@ -310,17 +329,60 @@ void DMA1_Channel4_IRQHandler(void)
 	}
 }
 
-void DMA1_Channel6_IRQHandler(void)
+void DMA1_Channel7_IRQHandler(void)
 {
-   if( DMA_GetITStatus(DMA1_IT_TC6) == SET )
+   if( DMA_GetITStatus(DMA1_IT_TC7) == SET )
 	{
-		DMA_ClearITPendingBit(DMA1_IT_TC6);
+		DMA_ClearITPendingBit(DMA1_IT_TC7);
 	    if(SemUartW2 != OS_EVENT_NULL)
 		{
 			OSSemPost(SemUartW2);
 		}
 	}
 }
+
+
+void USART2_IRQHandler(void)
+{
+	
+	 if (USART_GetFlagStatus(USART2, USART_FLAG_PE) != RESET)  
+   {  
+       USART_ReceiveData(USART2);  
+     USART_ClearFlag(USART2, USART_FLAG_PE);  
+   }  
+      
+   if (USART_GetFlagStatus(USART2, USART_FLAG_ORE) != RESET)  
+   {  
+       USART_ReceiveData(USART2);  
+     USART_ClearFlag(USART2, USART_FLAG_ORE);  
+   }  
+      
+    if (USART_GetFlagStatus(USART2, USART_FLAG_FE) != RESET)  
+   {  
+       USART_ReceiveData(USART2);  
+      USART_ClearFlag(USART2, USART_FLAG_FE);  
+   }  
+	
+	
+	 if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET)//判断是不是接收中断
+	 {
+		UART2_Buffer.buffer[UART2_Buffer.end++]= USART_ReceiveData(USART2);
+		UART2_Buffer.end &= 0xFF;
+		if(SemUart2 != OS_EVENT_NULL)
+		{
+				OSSemPost(SemUart2);
+		}
+
+		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+	 }else{
+		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+		USART_ClearITPendingBit(USART2,USART_IT_CTS);
+		USART_ClearITPendingBit(USART2,USART_IT_LBD);
+		USART_ClearITPendingBit(USART2,USART_IT_TC);
+	 }
+}
+
+
 
 
 

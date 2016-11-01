@@ -198,24 +198,26 @@ void DebugTask::ReceLoop(void)
 */
 void DebugTask::SendDaemon()
 {
-	UINT8 *taskBuffer;
+	
+	OSTimeDly(10);
+//	UINT8 *taskBuffer;
 
-	while (1)
-	{
-    	if(debug_link->ready())
-    	{
-				 taskBuffer = (UINT8 *)OSQPend(m_pQSem, 0,&g_u8Rerr);
-    		 debug_link->write((UINT8*)(taskBuffer+2),taskBuffer[1]);
-			   if(taskBuffer[0])
-         {
-			     free(taskBuffer);
-         }
-    	}
-		else
-		{
-		      OSTimeDly(10);
-		}
-	}/* end of while */
+//	while (1)
+//	{
+//    	if(debug_link->ready())
+//    	{
+//				 taskBuffer = (UINT8 *)OSQPend(m_pQSem, 0,&g_u8Rerr);
+//    		 debug_link->write((UINT8*)(taskBuffer+2),taskBuffer[1]);
+//			   if(taskBuffer[0])
+//         {
+//			     free(taskBuffer);
+//         }
+//    	}
+//		else
+//		{
+//		      OSTimeDly(10);
+//		}
+//	}/* end of while */
 
 }/*end of SendDaemon */
 

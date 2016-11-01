@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Code\App;..\..\Code\Driver;..\..\Code\uos_ii\Ports;..\..\Code\Driver\CMSIS\Core\CM3;..\..\Code\Driver\STM32F10x_StdPeriph_Driver\inc;..\..\Code\DataLink;..\..\Code\USER;..\..\Code\Driver\NANDFLASH;..\..\Code\Adc;..\..\Code\TimeUtil;..\..\Code\Driver\drivers</IncludePath>
+              <IncludePath>..\..\Code\App;..\..\Code\Driver;..\..\Code\uos_ii\Ports;..\..\Code\Driver\CMSIS\Core\CM3;..\..\Code\Driver\STM32F10x_StdPeriph_Driver\inc;..\..\Code\DataLink;..\..\Code\USER;..\..\Code\Driver\NANDFLASH;..\..\Code\Adc;..\..\Code\TimeUtil;..\..\Code\Driver\drivers;..\..\Code\Protocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -447,6 +447,26 @@
               <FileName>debugTask.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Code\App\debugTask.h</FilePath>
+            </File>
+            <File>
+              <FileName>ubloxTask.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\App\ubloxTask.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ubloxTask.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\App\ubloxTask.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Protocol</GroupName>
+          <Files>
+            <File>
+              <FileName>ublox_ubx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Protocol\ublox_ubx.h</FilePath>
             </File>
           </Files>
         </Group>

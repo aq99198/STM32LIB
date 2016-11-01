@@ -10,6 +10,19 @@
 INT8U                g_u8Rerr;          // the error code for create EVENT
 
 
+
+OS_EVENT         		*SemUart1 = OS_EVENT_NULL;
+OS_EVENT         		*SemUart2 = OS_EVENT_NULL;
+OS_EVENT         		*SemUart3 = OS_EVENT_NULL;
+OS_EVENT         		*SemUart5 = OS_EVENT_NULL;
+
+
+OS_EVENT 						*SemUartW1 = OS_EVENT_NULL;
+OS_EVENT 						*SemUartW3 = OS_EVENT_NULL;
+OS_EVENT 						*SemUartW2 = OS_EVENT_NULL;
+OS_EVENT            *SemUartW5 = OS_EVENT_NULL;
+
+
 OS_EVENT            *g_pResourceMutex;
 OS_EVENT            *MutexUartW5;
 OS_EVENT            *SemGprsLinkConnected;

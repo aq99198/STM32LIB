@@ -10,8 +10,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
-#include "Global.h"
-#include "ucos_ii.h"
+
 
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
@@ -20,34 +19,17 @@
 #include "misc.h"
 
 
-
-#ifndef UINT8
 typedef unsigned char UINT8;
-#endif
-
-#ifndef INT8
 typedef signed char   INT8;
-#endif
-
-#ifndef UINT16
 typedef unsigned short int UINT16;
-#endif
-
-#ifndef UINT32
 typedef unsigned int UINT32;
-#endif
-
-#ifndef INT16
 typedef short int INT16;
-#endif
-
-#ifndef INT32
 typedef int INT32;
-#endif
-
-#ifndef FLOAT32
 typedef float FLOAT32 ;
-#endif
+
+#include "Global.h"
+#include "ucos_ii.h"
+#include "ublox_ubx.h"
 
 
 #ifndef __CC_ARM
@@ -55,6 +37,8 @@ typedef float FLOAT32 ;
 #define USE_LAME_PRINTF
 #include "printf.h"
 #endif
+
+
 
 #include "usart.h"
 #include "bsp.h"
@@ -69,8 +53,11 @@ typedef float FLOAT32 ;
 #define BEEP_GPIO   GPIOA
 #define BEEP_PIN    GPIO_Pin_5 // PA12 (Buzzer)
 
+/************************  control  ***************************/
 
-///////////////////////////////////////////////
+
+
+/************************  function  ***************************/
 #define LED0
 #define BEEP
 #define USART1_ON

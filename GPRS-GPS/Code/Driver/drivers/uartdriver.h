@@ -16,10 +16,6 @@ SENTRY
 #ifndef __UART_DRIVER_H__
 #define __UART_DRIVER_H__
 
-extern OS_EVENT         *SemUart1;
-extern OS_EVENT         *SemUart2;
-extern OS_EVENT         *SemUart3;
-
 enum UCOS_UART_INDEX
 {
 	USART1_IDX=0,
@@ -31,13 +27,6 @@ enum UCOS_UART_INDEX
 	NUM_UART_IDX
 };
 
-
-typedef struct
-{
- u8 buffer[256];
- u8 front;
- u8 end;
-}Ring_BufferTypeDef;
 
 
 class CUartDriver

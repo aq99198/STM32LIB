@@ -6,11 +6,15 @@
 #include "ucos_ii.h"
 
 
-#define DEBUGMODE 1
-
 extern  OS_EVENT 						*SemUartW1;
+extern  OS_EVENT 						*SemUartW3;
 extern  OS_EVENT 						*SemUartW2;
 extern  OS_EVENT            *SemUartW5;
+
+extern 	OS_EVENT         		*SemUart1;
+extern 	OS_EVENT         		*SemUart2;
+extern 	OS_EVENT         		*SemUart3;
+extern 	OS_EVENT         		*SemUart5;
 
 //                                                 // ResourceMute for malloc , malloc is not thread safe function
 extern  OS_EVENT            *g_pResourceMutex;
@@ -28,7 +32,7 @@ extern  INT8U                g_u8Rerr;          // the error code for create EVE
 //#define APP_TASK_APLINKTX_STK_SIZE   512
 #define APP_TASK_APLINKRX_STK_SIZE   512
 #define APP_TASK_START_STK_SIZE      40
-#define APP_TASK_UBLOX_STK_SIZE      512
+#define APP_TASK_UBLOX_STK_SIZE      1024
 #define APP_TASK_SERVER_TX_STK_SIZE  512
 #define APP_TASK_SERVER_RX_STK_SIZE  512
 //#define APP_TASK_RECORD_READ_STK_SIZE 512

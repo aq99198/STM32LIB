@@ -1,5 +1,6 @@
 #include "board.h"
 #include "debugTask.h"
+#include "ubloxTask.h"
 
 void App_Task0();
 
@@ -7,6 +8,7 @@ int main(void)
 {
 			bsp_init();
 			USART1_Init();
+			USART2_Init();
 	
       OSInit();
 
@@ -37,7 +39,13 @@ void App_Task0()
 
 	SemUartW1 = OSSemCreate(1);
 	SemUartW2 = OSSemCreate(1);
+	SemUartW3 = OSSemCreate(1);
 	SemUartW5 = OSSemCreate(1);
+	
+	SemUart1 = OSSemCreate(0);
+	SemUart2 = OSSemCreate(0);
+	SemUart3 = OSSemCreate(0);
+	
 	//MutexUartW5 = OSMutexCreate(APP_TASK_START_PRIO, &g_u8Rerr);
 	
 	uint8_t a[5]={'a','b','c','d','f'};
@@ -51,6 +59,10 @@ void App_Task0()
 	DebugTask *debugTask = DebugTask::GetInstance();
   debugTask->Run();
 	
+	CUbloxGPS * gps = CUbloxGPS::GetInstance();
+  gps->Run();
+	
+	// 
 	SerialConsole = new CUartDriver(USART1_IDX);
 	
 	while(1)
@@ -59,11 +71,11 @@ void App_Task0()
 			//UART1_send_byte('a');
 		
 	
-				ERROR("it work!\r\n");
-				ERROR("sessed!\r\n");
+				//DEBUG("it work!\r\n");
+				//ERROR("sessed!\r\n");
 		
 //			OSSemPend(SemUartW1,0,&g_u8Rerr);
-//			USART1_DMA(p, 5);
+			  USART2_DMA(p, 5);
 //			OSSemPend(SemUartW1,0,&g_u8Rerr);
 //			USART1_DMA(p2, 5);
 //			OSTaskStkChk(APP_TASK_START_PRIO, &StackBytes);
@@ -74,4 +86,7 @@ void App_Task0()
 			OSTimeDly(30);
 			//LED0_TOGGLE;
 	}
-}  
+}
+
+
+

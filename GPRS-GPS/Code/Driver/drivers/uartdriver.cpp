@@ -17,24 +17,6 @@ SENTRY
 #include "board.h"
 #include "uartdriver.h"
 
-OS_EVENT         *SemUart1 = OS_EVENT_NULL;
-OS_EVENT         *SemUart2 = OS_EVENT_NULL;
-OS_EVENT         *SemUart3 = OS_EVENT_NULL;
-OS_EVENT         *SemUart5 = OS_EVENT_NULL;
-
-OS_EVENT         *SemUartW1 = OS_EVENT_NULL;
-OS_EVENT         *SemUartW2 = OS_EVENT_NULL;
-OS_EVENT         *SemUartW3 = OS_EVENT_NULL;
-OS_EVENT         *SemUartW5 = OS_EVENT_NULL;
-
-
-
-Ring_BufferTypeDef UART1_Buffer;
-Ring_BufferTypeDef UART2_Buffer;
-Ring_BufferTypeDef UART3_Buffer;
-Ring_BufferTypeDef UART5_Buffer;
-
-
 
 CUartDriver * SerialConsole =0;
 
@@ -368,7 +350,6 @@ void CUartDriver::setBaudRate(int bd)
 			USART1_Init();
 			break;
 		case USART2_IDX:
-			USART2_Init(9600);
 			break;
 		case USART3_IDX:
 			USART3_Init();

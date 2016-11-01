@@ -21,8 +21,10 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+
+#include "board.h"
 #include "stm32f10x_it.h"
-#include "ucos_ii.h" 
+
 
 
 
@@ -62,6 +64,16 @@ void SysTick_Handler(void)
   OSTimeTick();  /* Call uC/OS-II's OSTimeTick() */
   OSIntExit();  /* Tell uC/OS-II that we are leaving the ISR */
 }  
+
+
+void USART1_IRQHandler(void)
+{
+
+}
+
+
+
+
 
 
 
