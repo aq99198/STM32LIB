@@ -18,7 +18,6 @@
 ****************************************************************/
 
 
-
 #include "board.h"
 #include "debugTask.h"
 #include "uartdriver.h"
@@ -72,7 +71,7 @@ void DebugTask::Initiliaze()
 void DebugTask::Run()
 {
     _bRun       = true;
-    OSTaskCreateExt((void (*)(void *)) ReceMsgTask,
+    OSTaskCreateExt((void (*)(void *)) DebugLoop,
                              (void          * ) 0,
                              (OS_STK        * )&App_DebugTask1Stack[APP_DebugTASK1_STK_SIZE - 1],
                              (uint8_t         ) APP_DebugTASK1_PRIO,
@@ -82,25 +81,25 @@ void DebugTask::Run()
                              (void          * )0,
                              (uint16_t        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 														 
-		OSTaskCreateExt((void (*)(void *)) IMUTask ,
-                             (void          * ) 0,
-                             (OS_STK        * )&App_DebugTask2Stack[APP_DebugTASK2_STK_SIZE - 1],
-                             (uint8_t         ) APP_DebugTASK2_PRIO,
-                             (uint16_t        ) APP_DebugTASK2_PRIO,
-                             (OS_STK        * )&App_DebugTask2Stack[0],
-                             (INT32U          ) APP_DebugTASK2_STK_SIZE,
-                             (void          * )0,
-                             (uint16_t        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+//		OSTaskCreateExt((void (*)(void *)) IMUTask ,
+//                             (void          * ) 0,
+//                             (OS_STK        * )&App_DebugTask2Stack[APP_DebugTASK2_STK_SIZE - 1],
+//                             (uint8_t         ) APP_DebugTASK2_PRIO,
+//                             (uint16_t        ) APP_DebugTASK2_PRIO,
+//                             (OS_STK        * )&App_DebugTask2Stack[0],
+//                             (INT32U          ) APP_DebugTASK2_STK_SIZE,
+//                             (void          * )0,
+//                             (uint16_t        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 
-    OSTaskCreateExt((void (*)(void *)) SendMsgTask ,
-                             (void          * ) 0,
-                             (OS_STK        * )&App_DebugTask3Stack[APP_DebugTASK3_STK_SIZE - 1],
-                             (uint8_t         ) APP_DebugTASK3_PRIO,
-                             (uint16_t        ) APP_DebugTASK3_PRIO,
-                             (OS_STK        * )&App_DebugTask3Stack[0],
-                             (INT32U          ) APP_DebugTASK3_STK_SIZE,
-                             (void          * )0,
-                             (uint16_t        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+//    OSTaskCreateExt((void (*)(void *)) SendMsgTask ,
+//                             (void          * ) 0,
+//                             (OS_STK        * )&App_DebugTask3Stack[APP_DebugTASK3_STK_SIZE - 1],
+//                             (uint8_t         ) APP_DebugTASK3_PRIO,
+//                             (uint16_t        ) APP_DebugTASK3_PRIO,
+//                             (OS_STK        * )&App_DebugTask3Stack[0],
+//                             (INT32U          ) APP_DebugTASK3_STK_SIZE,
+//                             (void          * )0,
+//                             (uint16_t        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 														 
 }
 
@@ -110,16 +109,31 @@ void DebugTask::Run()
 @retval : NONE
 @note   :
 */
-void DebugTask::ReceMsgTask(void){
+void DebugTask::DebugLoop(void){
 	 if( !_pDebugTask->_bRun )
     {
         OSTaskSuspend(OS_PRIO_SELF);
     }
 		
+		OS_STK_DATA StackBytes;
 		
 		while(1){
-			OSTimeDly(300);
-			LED0_TOGGLE;
+			#ifdef DEBUG_ON
+			OSTaskStkChk(APP_TASK_START_PRIO, &StackBytes);
+			PRINT("mainTask TX: OSFree=%6d OSUsed=%6d\r\n",StackBytes.OSFree,StackBytes.OSUsed);
+			
+			OSTaskStkChk(APP_TASK_UBLOX_PRIO, &StackBytes);
+			PRINT("ubloxTask: OSFree=%6d OSUsed=%6d\r\n",StackBytes.OSFree,StackBytes.OSUsed);
+			
+			OSTaskStkChk(APP_TASK_SERVER_RX_PRIO, &StackBytes);
+			PRINT("ucloudTask RX: OSFree=%6d OSUsed=%6d\r\n",StackBytes.OSFree,StackBytes.OSUsed);
+			OSTaskStkChk(APP_TASK_SERVER_TX_PRIO, &StackBytes);
+			PRINT("ucloudTask TX: OSFree=%6d OSUsed=%6d\r\n",StackBytes.OSFree,StackBytes.OSUsed);
+			#endif
+			
+			OSTimeDly(1000);
+			
+			//LED0_TOGGLE;
 		}
 		
     //OSTimeDly(300);
@@ -145,7 +159,7 @@ void DebugTask::BurstPacket(void){
 @note   :
 */
 int DebugTask::RecvMsg(){
-
+	return 1;
 }
 
 /*
@@ -156,7 +170,7 @@ int DebugTask::RecvMsg(){
 */
 int DebugTask::SendMsg()
 {
-
+	return 1;
 }/* end of SendMsg */
 
 

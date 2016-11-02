@@ -41,26 +41,17 @@ void USART3_IRQHandler(void);
 void UART5_IRQHandler(void);
 void USART2_SetBaudRate(int bd);
 
+
+	extern  Ring_BufferTypeDef UART1_Buffer;
+	extern  Ring_BufferTypeDef UART2_Buffer;
+	extern  Ring_BufferTypeDef UART3_Buffer;
+	extern  Ring_BufferTypeDef UART5_Buffer;
+
 #ifdef  __cplusplus
 }
 #endif
 
-#ifdef __cplusplus
-    extern "C" Ring_BufferTypeDef UART1_Buffer;
-    extern "C" Ring_BufferTypeDef UART2_Buffer;
-    extern "C" Ring_BufferTypeDef UART3_Buffer;
-		extern "C" Ring_BufferTypeDef UART5_Buffer;
-    extern "C"{
-#else
-    extern Ring_BufferTypeDef UART1_Buffer;
-    extern Ring_BufferTypeDef UART2_Buffer;
-    extern Ring_BufferTypeDef UART3_Buffer;
-		extern Ring_BufferTypeDef UART5_Buffer;
-#endif
 
-#ifdef __cplusplus
-    }
-#endif 
 
 #endif /* end of _USART_H_ */
 /* end of file */

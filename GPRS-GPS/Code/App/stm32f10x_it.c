@@ -65,7 +65,56 @@ void SysTick_Handler(void)
   OSIntExit();  /* Tell uC/OS-II that we are leaving the ISR */
 }  
 
+void TIM5_IRQHandler(void)   
+{
+    if(TIM_GetITStatus(TIM5 , TIM_IT_Update) == SET)
+    {
 
+        static UINT32 tick = 0;
+				tick++;
+			
+        switch(SystemStatus)
+        {
+        case SYS_STARTUP: 
+        {
+           LED0_ON;
+        }
+        break;
+        case SYS_SIM900A_ON:
+        {
+					if(tick%10==1)
+						LED0_TOGGLE;
+        }
+        break;
+        case SYS_CONNECT_SERVER: 
+        {  
+					if(tick%10<4){
+						LED0_TOGGLE
+					}else{
+						LED0_ON;
+					}
+        }        
+        break;
+				
+				case SYS_GPS_FIX: 
+        {  
+					LED0_TOGGLE
+        }        
+        break;
+				
+				case SYS_SAVE: 
+        {  
+        }        
+        break;
+				
+        default:
+            // do nothing 
+            break;
+        }
+
+        TIM_ClearITPendingBit(TIM5 , TIM_IT_Update);
+    }
+}
 
 void NMI_Handler(void)
 {

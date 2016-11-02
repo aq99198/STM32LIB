@@ -47,7 +47,7 @@ class DebugTask
 	
 			int RecvMsg();
 			int SendMsg();
-			static void 	ReceMsgTask(void);
+			static void 	DebugLoop(void);
       static void   SendMsgTask(void);
 			static void   IMUTask(void);
 			static DebugTask 		*_pDebugTask;

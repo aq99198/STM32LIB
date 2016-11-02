@@ -788,14 +788,19 @@ typedef struct
    INT16  roll;//!< 1e1   deg   
 }MSG_AP_RT_TRACK_MSG;
 
+#pragma pack()
 
 typedef JACX_MSG_PACKET COMMPACKET_t;
 #define JACX_HEAD_SIZE sizeof(JACX_MSG_HEAD)
 #define HEAD_LEN_EX_SYNC sizeof(JACX_MSG_HEAD)-2
-void MsgCheckSum(JACX_MSG_PACKET &pct, UINT8 &CKA, UINT8 &CKB);
 
-#pragma pack()
 
+
+#ifdef ___GCS_OPERATOR__
+extern int Protocol_MSG_Length[NUM_MSG_ID];
+extern CString Protocol_MSG_Name[NUM_MSG_ID];
+void InitializeMsgDefinition();
+#endif
 
 
 

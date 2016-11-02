@@ -9,6 +9,12 @@ void bsp_init(){
 	
 	USART_gpio();
 	
+	USART1_Init();
+	USART2_Init();
+	UART5_Init();
+	
+	TIM5_init();
+	
 	ExitSleepMode_SIM900A();
 }
 
@@ -66,5 +72,33 @@ void ExitSleepMode_SIM900A(void)
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	GPIOB->BRR = GPIO_Pin_4;
+}
+
+void TIM5_init(void){
+		TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+		NVIC_InitTypeDef NVIC_InitStructure;
+	
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+    TIM_DeInit(TIM5);
+    TIM_TimeBaseStructure.TIM_Prescaler = 7200 - 1 ; // 72M -> 10,000,10K
+    TIM_TimeBaseStructure.TIM_Period = 10000 / 10 - 1; //-> 1000 tick, 100ms outtime-> 0.1s ,10Hz
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+    TIM_ARRPreloadConfig(TIM5, ENABLE);
+
+    TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+    TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
+
+
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+    TIM_Cmd(TIM5, ENABLE);
 }
 

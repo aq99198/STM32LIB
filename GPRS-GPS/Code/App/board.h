@@ -17,6 +17,7 @@
 #include "stm32f10x_usart.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_flash.h"
+#include "stm32f10x_tim.h"
 #include "misc.h"
 
 
@@ -33,7 +34,6 @@ typedef float FLOAT32 ;
 #include "ublox_ubx.h"
 #include "jacTypeDef.h"
 #include "UcloudMsgTypeDef.h"
-#include "ProtocolDef.h"
 
 
 #ifndef __CC_ARM
@@ -58,9 +58,6 @@ typedef float FLOAT32 ;
 #define BEEP_GPIO   GPIOA
 #define BEEP_PIN    GPIO_Pin_5 // PA12 (Buzzer)
 
-/************************  control  ***************************/
-
-
 
 /************************  function  ***************************/
 #define LED0
@@ -79,8 +76,8 @@ typedef float FLOAT32 ;
 // Helpful macros
 #ifdef LED0
 #define LED0_TOGGLE              digitalToggle(LED0_GPIO, LED0_PIN);
-#define LED0_OFF                 digitalHi(LED0_GPIO, LED0_PIN);
-#define LED0_ON                  digitalLo(LED0_GPIO, LED0_PIN);
+#define LED0_OFF                 digitalLo(LED0_GPIO, LED0_PIN);
+#define LED0_ON                  digitalHi(LED0_GPIO, LED0_PIN);
 #else
 #define LED0_TOGGLE
 #define LED0_OFF

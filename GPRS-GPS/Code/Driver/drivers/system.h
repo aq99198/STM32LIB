@@ -12,7 +12,10 @@ void read_onchip_flash(u32 addr,u8 *p,u16 n);
 
 void EndianSwap32(void *p);
 void EndianSwap16(void *p);
-
+void JTAG_Set(u8 mode);
+void Power_ON(void);
+void GPRS_Wakeup(void);
+void  SysStausCheck(void);
 			
 #ifdef __cplusplus
     }

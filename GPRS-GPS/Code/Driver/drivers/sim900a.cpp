@@ -280,8 +280,10 @@ int SIM900A::waitForResp(const UINT8 *resp, UINT32 timeout)
         if(serialSim900a->available()) 
         {           
             rlen=1;
-            serialSim900a->read(&AtResp[idx], &rlen);                     
+            serialSim900a->read(&AtResp[idx], &rlen);
+						#ifdef SIM900A_DEBUG_ON					
 					  PRINT("%c",AtResp[idx]);
+						#endif
 					  idx++; 
             if(NULL != strstr((char *)&AtResp[0],(char*)resp)) 
 						{
@@ -311,9 +313,11 @@ int SIM900A::waitForResp(const UINT8 *resp, UINT32 timeout)
     {
         rlen=1;
         serialSim900a->read(&c,&rlen);
+				#ifdef SIM900A_DEBUG_ON		
 			  PRINT("%c",c);
+				#endif
     }
-		PRINT("\r\n");
+		//PRINT("\r\n");
 
     return ret;
 }
@@ -329,7 +333,9 @@ void SIM900A::sendEndMark(void)
 int SIM900A::sendCmdAndWaitForResp(const char* cmd, const char *resp, UINT32 timeout)
 {
     sendCmd((UINT8*)cmd);
-	  PRINT("%s\r\n",cmd);
+		#ifdef SIM900A_DEBUG_ON
+		PRINT("send commaner: %s",cmd);
+		#endif
     return waitForResp((const UINT8*)resp,timeout);
 }
 

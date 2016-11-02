@@ -24,7 +24,9 @@ NOTE : The SendDaemon Function must be invoked by a task
 
 /******************************INCLUDES*************************/
 #include "board.h"
+#include "ucloudTask.h"
 #include "ubloxTask.h"
+#include "ProtocolDef.h"
 
 
 /***************THE LOCAL VARIABLES **************************/
@@ -42,6 +44,7 @@ CUbloxGPS::CUbloxGPS(void)
 {  
 	gpsSerial = new CUartDriver(USART2_IDX);
 	_fcLink = new CUartDriver(USART1_IDX);
+		
 }
 
 CUbloxGPS::~CUbloxGPS(void)
@@ -78,15 +81,14 @@ void   CUbloxGPS::Run()
 }
 
 /**
-@brief  :  Initiliaze the GPS according the default configuration
+@brief  :  set gps & usart2 baud rate
 @param  :  NONE
 @retval :  NONE
 @note   :  THIS function invokes the UCOS_II OSTimeDly(), so we must invoke this function after 
            starting the OS systick , starting the dispatch mechanism , the OSTimeDly() would work
 */
-void CUbloxGPS::Initiliaze()
-{
-    OSTimeDly(1000); // waiting for the GPS hardware set up 
+void CUbloxGPS::SetBaudRate(uint32_t baud){
+	 OSTimeDly(1000); // waiting for the GPS hardware set up 
     UBX_PACKET  UbxPackt;
 
    // INITIAL UBLOX , configuration the port and the baud rate	
@@ -99,7 +101,7 @@ void CUbloxGPS::Initiliaze()
     //pCfgPrt->Res0 = ;
     //pCfgPrt->Res1 = ;
     pCfgPrt->Mode   = 0x08D0;
-    pCfgPrt->Baudrate       = 9600;
+    pCfgPrt->Baudrate       = baud;
     pCfgPrt->In_proto_mask  = 0x01;
     pCfgPrt->Out_proto_mask = 0x01;
     pCfgPrt->Flags = 0x0;
@@ -107,10 +109,21 @@ void CUbloxGPS::Initiliaze()
     SendGpgMsg(UbxPackt);
 		
     OSTimeDly(500);
-		//have a bug for here
-		//USART2_SetBaudRate(115200);
-		OSTimeDly(500);
+		USART2_SetBaudRate(baud);
+}
 
+
+/**
+@brief  :  Initiliaze the GPS according the default configuration
+@param  :  NONE
+@retval :  NONE
+@note   :  THIS function invokes the UCOS_II OSTimeDly(), so we must invoke this function after 
+           starting the OS systick , starting the dispatch mechanism , the OSTimeDly() would work
+*/
+void CUbloxGPS::Initiliaze()
+{
+		UBX_PACKET  UbxPackt;
+		OSTimeDly(500);
     // configuration the 
     UBX_MSG_CFG_NAV5 *pCfgNav5;
     pCfgNav5 = (UBX_MSG_CFG_NAV5 *)&UbxPackt.data[0] ;
@@ -184,7 +197,6 @@ void CUbloxGPS::Initiliaze()
 */
 int CUbloxGPS::RecvGPSMsg(UBX_PACKET &pckt)
 {
-
     UINT8* pchar;
     int   Readlen =0;
 
@@ -203,7 +215,9 @@ int CUbloxGPS::RecvGPSMsg(UBX_PACKET &pckt)
                 {
                     break;
                 }
-            } /* end of if */
+            }else{
+							//OSTimeDly(1);  /* Release system resources */
+						}
 
         }/* end of  inside while */
 
@@ -269,21 +283,81 @@ void  CUbloxGPS::TaskLoop()
 {
 		#define HEARTBEAT_MSG_INTERVAL_MS      10000
     static UBX_PACKET pckt_main;
+		static JCLOUD_MSG_PACK serverpckt;
     UBX_MSG_HEAD *REV_MSG_HEAD;
 		UINT8 *src = (UINT8*)&pckt_main.data;	
+		Ucloud  *server = Ucloud::getIntance();
+		static COMMPACKET_t pkt;
+		static INT32  tmp_lati, tmp_long, tmp;
+		static UINT8 cka, ckb;
+	
+	 memset(pkt.Data,0,MAX_PACKET_LENGTH);
+    pkt.msgHead.sync0 = JACX_SYNHEAD0;
+    pkt.msgHead.sync1 = JACX_SYNHEAD1;
+	  pkt.msgHead.dest = 0;	
+    pkt.msgHead.source = 0;
+  	pkt.msgHead.msgID = 210; // 新定义的消息
+    pkt.msgHead.SeqNum = 0;
+	  pkt.msgHead.ACK_NAK = 0;
+	  pkt.msgHead.len = 22;//fix wing
+	
+		gpsSerial->clearBuffer();
     while(1)
     {	 
-        RecvGPSMsg(pckt_main);
+        RecvGPSMsg(pckt_main); // probleam 
         REV_MSG_HEAD = (UBX_MSG_HEAD*)&pckt_main;
         if( 0x01 == REV_MSG_HEAD->cls )	
         {
-            switch(REV_MSG_HEAD->id)  //这里接收到的就是PVT 数据包
+            switch(REV_MSG_HEAD->id)  //ptv packet
             {
 								 case 0x07: 
 									{
 										UBX_MSG_NAV_PVT ubx_pvt;
 										memcpy(&ubx_pvt,src,pckt_main.head.len);
 										// logic
+										
+										//memset(&pkt.Data, 0,pckt_main.head.len);	 // init packet	
+                    tmp_lati = (INT32)floor((*((INT32*)&src[28]))/5.72957795131 + 0.5);	//latitude					
+									  memcpy(&pkt.Data[0],  &tmp_lati, 4);
+									  tmp_long = (INT32)floor((*((INT32*)&src[24]))/5.72957795131 + 0.5);	//longitude					
+									  memcpy(&pkt.Data[4],  &tmp_long, 4);										
+										tmp = *((INT32*)&src[36]);	//altitude					
+									  memcpy(&pkt.Data[8],  &tmp, 4);
+
+								
+										// 发送速度
+										*((INT16*)&pkt.Data[12]) = (INT16)floor((*((INT32*)&src[48]))/10.0+0.5);
+										*((INT16*)&pkt.Data[14]) = (INT16)floor((*((INT32*)&src[52]))/10.0+0.5);	
+										*((INT16*)&pkt.Data[16]) = (INT16)floor((*((INT32*)&src[56]))/10.0+0.5);	
+											// 发送 航向
+										*((UINT16*)&pkt.Data[18]) = (UINT16)floor((*((INT32*)&src[64]))/572.957795131+0.5);
+										*((UINT16*)&pkt.Data[20]) = (UINT16)floor((*((INT32*)&src[64]))/572.957795131+0.5);
+										//pkt.msgHead.len =20;
+										MsgCheckSum(pkt, cka, ckb);
+										pkt.Data[22] = cka;//fix wing msg length:118
+										pkt.Data[23] = ckb;	
+										
+										serverpckt.msgHead.msgid = JCLOUD_MSG_ID_PUSH_DRONE_CONTENT;
+										serverpckt.msgHead.msglen = sizeof(pkt.msgHead) + 24; 
+										memcpy((UINT8*)serverpckt.Data,&pkt.msgHead.sync0,serverpckt.msgHead.msglen);
+										
+										if((src[21] != 0) && (src[20] == 0x03) && ((*(UINT16*)&src[76]) <= 410))
+										{
+											OSMutexPend(SemUartW5, 0, &g_u8Rerr);	
+											server->SendMsg(serverpckt);
+											OSMutexPost(SemUartW5);	
+											SystemStatus = SYS_GPS_FIX;
+											#ifdef GPS_DEBUG_ON
+											PRINT("LAT:%d \t LON:%d \r\n",ubx_pvt.LAT,ubx_pvt.LON);
+											#endif
+										}	else{
+											#ifdef GPS_DEBUG_ON
+											PRINT("fix flag:%d fix_type:%d DOP:%d\r\n", src[21],src[20],*((UINT16*)&src[76]));
+											if((src[21] != 0) && (src[20] == 0x03)&& ((*(UINT16*)&src[76]) > 410) ){
+												DEBUG("GPS_FIXED\r\n");
+											}
+											#endif
+										}							
 									}
                 break;
                 default:
@@ -303,6 +377,7 @@ void  CUbloxGPS::TaskLoop()
 void   CUbloxGPS::GpsTask( void * param )
 {
 		CUbloxGPS *  gps = ( CUbloxGPS*)param;
+		gps->SetBaudRate(115200);
 		gps->Initiliaze();
     gps->TaskLoop();
 }

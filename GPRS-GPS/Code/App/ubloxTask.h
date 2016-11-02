@@ -43,7 +43,8 @@ private:
 private:
     static void  GpsTask( void *  param );    
     void   Initiliaze();
-    void    TaskLoop( );
+		void   SetBaudRate(uint32_t baud);
+    void   TaskLoop();
 
     // variable member
 private:

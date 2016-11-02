@@ -6,6 +6,7 @@
 #ifndef __SIM900A_H__
 #define __SIM900A_H__
 
+#include "uartdriver.h"
 
 #define SIM900A_SERIAL_PORT      (UART5_IDX)
 #define SIM900A_SERILA_BAUDRATE  (115200)

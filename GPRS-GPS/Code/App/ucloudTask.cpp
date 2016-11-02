@@ -232,32 +232,33 @@ void Ucloud::SendLoop()
 		  OSSemPend(semMutex,0,&g_u8Rerr);
   		if(timerEnd > (TIMEOUT_TO_RECONNECT_MS + m_uLatestTime_ms)) // 超时重启
 			{
-				PRINT("reconnect!!\r\n");
+				DEBUG("reconnect!!\r\n");
 				m_bConnect = false;
 				resetFlag = 1;
 				bConnect = m_bConnect;
 			}	
 			OSSemPost(semMutex);
 			
-//			if(((timerEnd - timerStart) > HEARTBEAT_MSG_INTERVAL_MS) && (bConnect == true))  // 定时发送心跳
-//			{	
-//				//SendHeartbeat();    // 发送心跳包已近迁移到Ubox类中。						
-//				timerStart = OSTimeGet();
-//			}
+			if(((timerEnd - timerStart) > HEARTBEAT_MSG_INTERVAL_MS) && (bConnect == true)) 
+			{	
+				SendHeartbeat();   				
+				timerStart = OSTimeGet();
+			}
 			OSTimeDly(SEND_POLL_INTERVAL_MS);	
 
-			while( !bConnect ) // 超时重启
+			while( !bConnect ) 
 			{	
-				if(resetFlag == 1)	// 1, 首先进行重启
+				if(resetFlag == 1)	// restart sim900a
 				{
 					OSTaskSuspend(APP_TASK_SERVER_RX_PRIO);
 					OSTimeDly(2000);	
-					PRINT("reset sim900a\r\n");
+					SystemStatus = SYS_SIM900A_ON;
+					DEBUG("reset sim900a\r\n");
 					Init(1);					
 					OSTaskResume(APP_TASK_SERVER_RX_PRIO);
 					resetFlag = 0;
 				}
-				else	// 2, 发送握手 
+				else	//  send identity
 				{
 					SendIdentity();						
 					
@@ -292,7 +293,7 @@ void Ucloud::RcvLoop()
 		}		
 		if(ret == -1)
 		{
-			PRINT("cka ckb error\r\n");
+			DEBUG("cka ckb error\r\n");
 		}	
 		
 		switch(ServerPackt.msgHead.msgid)
@@ -325,7 +326,9 @@ void Ucloud::RcvLoop()
 				OSMutexPend(semMutex, 0, &g_u8Rerr);
 			  m_bConnect = true;
 			  OSMutexPost(semMutex);
+				#ifdef UCLOUD_DEBUG_ON
 				DEBUG("RcvHeartbeat!\r\n");
+				#endif
 			break;
 			
 			case JCLOUD_MSG_ID_PUSH_DRONE_CONTENT:	
@@ -375,7 +378,7 @@ INT32 Ucloud::RecvMsg(JCLOUD_MSG_PACK & pck)
 		  timerEnd = OSTimeGet();
 		  if(timerEnd >= (timerStart + 100000))
 		  {
-		      PRINT("rx no data\r\n");
+		      DEBUG("rx no data\r\n");
 			  return -2;
 		  }
 		  OSTimeDly(100);
@@ -409,25 +412,25 @@ INT32 Ucloud::RecvMsg(JCLOUD_MSG_PACK & pck)
 					static int cnt=0;
 					int i;								
 
-					PRINT("+++++%d\n",cnt);
+					DEBUG("+++++%d\n",cnt);
 					cnt++;
 			    for(i=0; i<pck.msgHead.msglen+SIZE_OF_JCLOUD_MSG_HEAD+4; i++)
 					{
-							PRINT(" 0x%x", ((UINT8 *)&pck)[i]);
+							DEBUG(" 0x%x", ((UINT8 *)&pck)[i]);
 							if((i&0x1F) == 0x1F)
 						  {
 									PRINT("\r\n");
 							}
 				   } 	
-					PRINT("\r\n");	
-					PRINT("Receive Data\r\n");
+					DEBUG("\r\n");	
+					DEBUG("Receive Data\r\n");
 					#endif
 					
 					return (pck.msgHead.msglen + 2);
 			 }
 			 else
 			 {
-			     PRINT("gprs rx msg error\r\n");
+			     DEBUG("gprs rx msg error\r\n");
 				 return -1;
 			 }
       }
@@ -518,6 +521,8 @@ void Ucloud::SendHeartbeat()
 	OSMutexPend(SemUartW5, 0, &g_u8Rerr);
 	SendMsg(pckt);
 	OSMutexPost(SemUartW5);
+	#ifdef UCLOUD_DEBUG_ON
 	DEBUG("SendHeartbeat\r\n");
+	#endif
 }
 

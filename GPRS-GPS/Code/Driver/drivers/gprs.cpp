@@ -33,26 +33,38 @@ INT32 GPRS::init( INT32 baudRate, INT8 RstFlag)
 
     if( simInStance->SysInit(RstFlag) )
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("sim900a can not powered up\r\n");
+				#endif
         return 1;
-    }	
+    }else
+		{
+				SystemStatus = SYS_SIM900A_ON;
+				ERROR("power								[OK]\r\n");
+		}	
 		
 		if(simInStance->sendCmdAndWaitForResp("AT\r\n","OK\r\n",DEFAULT_TIMEOUT*3))
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("AT OK ERROR \r\n");
-        return 1;
+				#endif
+				return 1;
     }	
 		
 		if(simInStance->sendCmdAndWaitForResp((char*)"ATE0\r\n",(char*)"OK\r\n",DEFAULT_TIMEOUT*3))
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("ATE0 ERROR \r\n");
+				#endif 
         return 1;
     }
 		
 		if(simInStance->sendCmdAndWaitForResp((char*)"AT+IPR=0\r\n",(char*)"OK\r\n",DEFAULT_TIMEOUT*3))
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("AT IPR 0 ERROR \r\n");
         return 1;
+				#endif
     }
 		
 //		if(simInStance->sendCmdAndWaitForResp((char*)"AT+IFC=2,2\r\n",(char*)"OK\r\n",DEFAULT_TIMEOUT*3))
@@ -63,19 +75,25 @@ INT32 GPRS::init( INT32 baudRate, INT8 RstFlag)
 	
     if(simInStance->sendCmdAndWaitForResp("AT+CFUN=1\r\n","OK\r\n",DEFAULT_TIMEOUT*3))
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("AT CFUN=1 ERROR \r\n");
+				#endif
         return 1;
     }		
 		
 		if(simInStance->sendCmdAndWaitForResp((char*)"AT+CSCLK?\r\n",(char*)"OK\r\n",DEFAULT_TIMEOUT*3))
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("AT CSCLK ERROR \r\n");
+				#endif
         return 1;
     }
 		
     if(checkSIMStatus())
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("CHECK SIM STATUS ERROR \r\n");
+				#endif
 	    return 1;
     }
     return 0;
@@ -302,14 +320,18 @@ INT32 GPRS::networkCheck(void)
 {
     OSTimeDly(1000);
     if(0 != simInStance->sendCmdAndWaitForResp("AT+CGREG?\r\n","+CGREG: 0,1",DEFAULT_TIMEOUT*3))
-    {
-        ERROR("ERROR:CGREG");
+		{
+        #ifdef SIM900A_DEBUG_ON		
+				ERROR("ERROR:CGREG");
+				#endif
         return -1;
     }
     OSTimeDly(1000);
     if(0 != simInStance->sendCmdAndWaitForResp("AT+CGATT?\r\n","+CGATT: 1",DEFAULT_TIMEOUT)) 
     {
+				#ifdef SIM900A_DEBUG_ON		
         ERROR("ERROR:CGATT");
+				#endif
         return -1;
     }
     return 0;
@@ -413,29 +435,35 @@ INT32 GPRS::TcpPrepare(INT8 RstFlag)
 	
     if( init(115200, RstFlag) )
     {
+				#ifdef SIM900A_DEBUG_ON		
         DEBUG("SIM900A  ERROR\r\n");
+				#endif
         return 1;
     }
     else
     {
         if( !join((UINT8*)"CMNET") )
         {
+						#ifdef SIM900A_DEBUG_ON		
             DEBUG("JOIN ERROR\r\n");
+						#endif
             return 1;
         }
         else
         {
-            DEBUG("JOIN OK\r\n");
+						
+            DEBUG("commader							[OK]\r\n");
 					  if( connectTcp("120.24.6.72",8000) ) //
 					  //if( connectTcp("121.69.39.114",9120) ) //  test server
             //if( connectTcp("www.u-cloud.cn",9119) ) // "124.202.183.106",9120  "101.200.213.143",4000 "120.24.6.72",2222
             {
-                DEBUG("ERROR CONNECT THE SERVER\r\n");
+                DEBUG("ERROR CONNECT THE SERVER						[fault]\r\n");
                 return 1;
             }
             else
             {
-                DEBUG("SUCC TO CONNECT THE SERVER\r\n");
+								SystemStatus = SYS_CONNECT_SERVER;
+                DEBUG("SUCC TO CONNECT THE SERVER					[OK]\r\n");
             }
         
         }

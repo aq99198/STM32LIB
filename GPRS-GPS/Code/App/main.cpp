@@ -5,13 +5,16 @@
 #include "ubloxTask.h"
 
 void App_Task0();
+void  Facade(void);
+
 
 int main(void)
 {
+			GPRS_Wakeup();
+	
 			bsp_init();
-			USART1_Init();
-			USART2_Init();
-			UART5_Init();
+	
+			SystemStatus = SYS_STARTUP;
 	
       OSInit();
 
@@ -27,7 +30,6 @@ int main(void)
 											(INT16U        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK)
 									 );
 
-
       OSStart();
       return 0;
 }
@@ -40,52 +42,38 @@ void App_Task0()
 		OSStatInit();
 #endif
 
-	SemUartW1 = OSSemCreate(1);
-	SemUartW2 = OSSemCreate(1);
-	SemUartW3 = OSSemCreate(1);
-	SemUartW5 = OSSemCreate(1);
 	
-	SemUart1 = OSSemCreate(0);
-	SemUart2 = OSSemCreate(0);
-	SemUart3 = OSSemCreate(0);
-	
-	//MutexUartW5 = OSMutexCreate(APP_TASK_START_PRIO, &g_u8Rerr);
-	
-	uint8_t a[5]={'a','b','c','d','f'};
-	uint8_t *p =a;
-	
-	uint8_t c[5]={'g','h','i','j','k'};
-	uint8_t *p2 =c;
-	
-	OS_STK_DATA StackBytes;
-	
-		
 	SerialConsole = new CUartDriver(USART1_IDX);
 	
+	Facade();
 	
 	DebugTask *debugTask = DebugTask::GetInstance();
   debugTask->Run();
 	
 	CUbloxGPS * gps = CUbloxGPS::GetInstance();
-  //gps->Run();
+  gps->Run();
 	
+	/* This task should be put at the end */
 	Ucloud *server = Ucloud::getIntance();
   server->Run();
-	
-	
-	// 
-
 	
 	while(1)
 	{
 		
-		
-		
-		printf("printTest\r\n");
-		
-			OSTimeDly(30);
-			//LED0_TOGGLE;
+		//printf("printTest\r\n");
+		OSTimeDly(30);
+		//LED0_TOGGLE;
 	}
+}
+
+
+#define BuildList "**BuildTime " __DATE__" " __TIME__ "\r\n"
+void  Facade(void)
+{
+	DEBUG("************** JOUAV GPRS **************** \r\n");
+	DEBUG("**Version bate v1.4\r\n");
+	DEBUG(BuildList);
+	DEBUG("************** JOUAV GPRS **************** \r\n");
 }
 
 

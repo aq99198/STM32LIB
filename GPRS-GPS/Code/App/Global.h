@@ -31,31 +31,47 @@ extern INT32U JCLOUD_APID;
 extern INT32U JCLOUD_GSMID;
 extern INT32U JCLOUD_IP;
 extern INT16U JCLOUD_PORT;
-extern INT32U LedMode;
+
+extern volatile INT8U  SystemStatus;
+
+
+#define SYS_STARTUP     	   (0)
+#define SYS_SIM900A_ON    	 (1)
+#define SYS_CONNECT_SERVER   (2)
+#define SYS_GPS_FIX   			 (3)
+#define SYS_SAVE  		       (4)
+
+
+/************************  debug control  ***************************/
+
+//#define DEBUG_ON    /* watch the stack */
+#define SIM900A_DEBUG_ON
+#define UCLOUD_DEBUG_ON
+#define GPS_DEBUG_ON
 
 
 /************************ the global Function ***************************/
 
 
 //#define APP_TASK_APLINKTX_STK_SIZE   512
-#define APP_TASK_APLINKRX_STK_SIZE   512
-#define APP_TASK_START_STK_SIZE      40
-#define APP_TASK_UBLOX_STK_SIZE      1024
-#define APP_TASK_SERVER_TX_STK_SIZE  512
-#define APP_TASK_SERVER_RX_STK_SIZE  512
+#define APP_TASK_APLINKRX_STK_SIZE   256
+#define APP_TASK_START_STK_SIZE      256
+#define APP_TASK_UBLOX_STK_SIZE      256
+#define APP_TASK_SERVER_TX_STK_SIZE  256
+#define APP_TASK_SERVER_RX_STK_SIZE  256
 //#define APP_TASK_RECORD_READ_STK_SIZE 512
-#define APP_TASK_RECORD_COM_STK_SIZE  512
+#define APP_TASK_RECORD_COM_STK_SIZE  256
 
 
-#define APP_MUTEX_APLINKTX_PRIO      1
-#define APP_MUTEX_UART5_PRIO         2
+#define APP_MUTEX_APLINKTX_PRIO      21
+#define APP_MUTEX_UART5_PRIO         22
 #define APP_TASK_START_PRIO          10
-//#define APP_TASK_APLINKTX_PRIO       3
+//#define APP_TASK_APLINKTX_PRIO     3
 #define APP_TASK_APLINKRX_PRIO       4
-#define APP_TASK_UBLOX_PRIO          9
+#define APP_TASK_UBLOX_PRIO          2
 #define APP_TASK_SERVER_TX_PRIO      5
 #define APP_TASK_SERVER_RX_PRIO      6
-//#define APP_TASK_RECORD_READ_PRIO    7
+//#define APP_TASK_RECORD_READ_PRIO  7
 #define APP_TASK_RECORD_COM_PRIO     8
 
 //__align(8) extern OS_STK		App_Task_APLINKTX_Stack[APP_TASK_APLINKTX_STK_SIZE];
