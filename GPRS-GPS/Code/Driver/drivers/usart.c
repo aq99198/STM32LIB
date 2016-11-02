@@ -207,7 +207,7 @@ void USART3_Init()
 {
 	USART_InitTypeDef USART_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
-    //DMA_InitTypeDef  DMA_InitStructure;
+  DMA_InitTypeDef  DMA_InitStructure;
 
     USART_Cmd(USART3, DISABLE);
 
@@ -231,35 +231,35 @@ void USART3_Init()
 
  	USART_Cmd(USART3, ENABLE);
    
-//      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-//    
-// 	  DMA_Cmd(DMA1_Channel2, ENABLE);
-//    
-// 	  DMA_DeInit(DMA1_Channel2);
-// 	  DMA_InitStructure.DMA_PeripheralBaseAddr = (unsigned int)&USART3->DR;//SPI2_DR_Base;
-// 	  DMA_InitStructure.DMA_MemoryBaseAddr = 0;//(unsigned int )SPI_Buffer_Tx;
-// 	  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;//DMA的转换模式是SRC模式，就是从外设向内存中搬运DMA_DIR_MemoryToPeripheral;
-// 	  DMA_InitStructure.DMA_BufferSize = 0;//sizeof(SPI_Buffer_Tx);
-// 	  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-// 	  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-// 	  DMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;//DMA_PeripheralDataSize_HalfWord;
-// 	  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;//DMA_MemoryDataSize_HalfWord;
-// 	  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;//DMA_Mode_Circular;
-// 	  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-// 	  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;			 //M2M模式禁止
-//    
-// 	  DMA_Init(DMA1_Channel2, &DMA_InitStructure);		
-//    
-//    
-// 	  USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
-//    
-// 	USART_Cmd(USART3, ENABLE);
-// 	  DMA_Cmd(DMA1_Channel2,DISABLE);
-// 	  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel2_IRQn;
-// 	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-// 	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-// 	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-// 	  NVIC_Init(&NVIC_InitStructure);
+      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    
+ 	  DMA_Cmd(DMA1_Channel2, ENABLE);
+    
+ 	  DMA_DeInit(DMA1_Channel2);
+ 	  DMA_InitStructure.DMA_PeripheralBaseAddr = (unsigned int)&USART3->DR;//SPI2_DR_Base;
+ 	  DMA_InitStructure.DMA_MemoryBaseAddr = 0;//(unsigned int )SPI_Buffer_Tx;
+ 	  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;//DMA的转换模式是SRC模式，就是从外设向内存中搬运DMA_DIR_MemoryToPeripheral;
+ 	  DMA_InitStructure.DMA_BufferSize = 0;//sizeof(SPI_Buffer_Tx);
+ 	  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ 	  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+ 	  DMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;//DMA_PeripheralDataSize_HalfWord;
+ 	  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;//DMA_MemoryDataSize_HalfWord;
+ 	  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;//DMA_Mode_Circular;
+ 	  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+ 	  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;			 //M2M模式禁止
+    
+ 	  DMA_Init(DMA1_Channel2, &DMA_InitStructure);		
+    
+    
+ 	  USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+    
+ 	USART_Cmd(USART3, ENABLE);
+ 	  DMA_Cmd(DMA1_Channel2,DISABLE);
+ 	  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel2_IRQn;
+ 	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+ 	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 	  NVIC_Init(&NVIC_InitStructure);
    
 }
 

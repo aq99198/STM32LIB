@@ -7,6 +7,8 @@ void bsp_init(){
 	
 	led_gpio_init();
 	
+	WakeupPin_Config();
+	
 	USART_gpio();
 	
 	USART1_Init();
@@ -101,4 +103,48 @@ void TIM5_init(void){
 
     TIM_Cmd(TIM5, ENABLE);
 }
+
+
+void GPRS_POWER_INIT(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE); 
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPRS_POWER_OFF();
+}
+
+void WakeupPin_Config(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+	
+	RCC_APB2PeriphClockCmd(KEY_POWER_CLK| RCC_APB2Periph_AFIO,ENABLE);
+	
+	GPIO_InitStructure.GPIO_Pin = KEY_POEWR_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;	         // 下拉输入
+  GPIO_Init(KEY_POWER_GPIO, &GPIO_InitStructure);
+	
+	GPIO_EXTILineConfig(KEY_POWER_SOURCE, KEY_POWER_PIN_SOURCE);
+	
+  EXTI_InitStructure.EXTI_Line = KEY_POEWR_EXTI;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising; //上升沿触发
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+	
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+	NVIC_InitStructure.NVIC_IRQChannel = KEY_POWER_IRQChannel;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
+
+
+
 

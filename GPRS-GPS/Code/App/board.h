@@ -18,6 +18,8 @@
 #include "stm32f10x_dma.h"
 #include "stm32f10x_flash.h"
 #include "stm32f10x_tim.h"
+#include "stm32f10x_exti.h"
+#include "stm32f10x_pwr.h"
 #include "misc.h"
 
 
@@ -112,5 +114,19 @@ typedef float FLOAT32 ;
 #define INV_ON                  ;
 #endif
 
+
+#define KEY_POWER_CLK         RCC_APB2Periph_GPIOA
+#define KEY_POWER_GPIO        GPIOA
+#define KEY_POEWR_PIN         GPIO_Pin_0
+#define KEY_POWER_SOURCE      GPIO_PortSourceGPIOA
+#define KEY_POWER_PIN_SOURCE  GPIO_PinSource0
+#define KEY_POEWR_EXTI        EXTI_Line0
+#define KEY_POWER_IRQChannel  EXTI0_IRQn
+
+#define GPRS_POWER_ON()  GPIO_SetBits(GPIOB,GPIO_Pin_5)
+#define GPRS_POWER_OFF() GPIO_ResetBits(GPIOB,GPIO_Pin_5)
+
+#define POWER_ON()  GPIO_SetBits(GPIOB,GPIO_Pin_3)
+#define POWER_OFF() GPIO_ResetBits(GPIOB,GPIO_Pin_3)
 
 

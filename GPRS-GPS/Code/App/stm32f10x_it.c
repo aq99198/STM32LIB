@@ -65,6 +65,39 @@ void SysTick_Handler(void)
   OSIntExit();  /* Tell uC/OS-II that we are leaving the ISR */
 }  
 
+void delay_nms(u32 nCount)
+{    
+   for(; nCount != 0; nCount--);
+}
+
+// for power control
+void EXTI0_IRQHandler(void)                 
+{
+  if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+  {
+		EXTI_ClearITPendingBit(EXTI_Line0);     
+					
+			__disable_irq();     
+			
+			printf("interrput\r\n");
+			GPRS_POWER_OFF();
+			delay_nms(8000000);
+			GPRS_POWER_ON();          //close GPRS
+			delay_nms(8000000);
+			GPRS_POWER_OFF();
+			delay_nms(8000000);
+			printf("gprs power off\r\n");
+						
+			RCC_APB2PeriphResetCmd(0X01FC,DISABLE);	
+			
+			RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);	
+			PWR_WakeUpPinCmd(ENABLE);              
+			PWR_EnterSTANDBYMode();                
+  }
+}
+
+
+// for led
 void TIM5_IRQHandler(void)   
 {
     if(TIM_GetITStatus(TIM5 , TIM_IT_Update) == SET)

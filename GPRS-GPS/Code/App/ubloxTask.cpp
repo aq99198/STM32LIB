@@ -351,6 +351,7 @@ void  CUbloxGPS::TaskLoop()
 											PRINT("LAT:%d \t LON:%d \r\n",ubx_pvt.LAT,ubx_pvt.LON);
 											#endif
 										}	else{
+											SystemStatus = SYS_CONNECT_SERVER;
 											#ifdef GPS_DEBUG_ON
 											PRINT("fix flag:%d fix_type:%d DOP:%d\r\n", src[21],src[20],*((UINT16*)&src[76]));
 											if((src[21] != 0) && (src[20] == 0x03)&& ((*(UINT16*)&src[76]) > 410) ){

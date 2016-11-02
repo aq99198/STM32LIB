@@ -458,6 +458,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\Code\App\ubloxTask.h</FilePath>
             </File>
+            <File>
+              <FileName>ucloudTask.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\App\ucloudTask.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ucloudTask.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\App\ucloudTask.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -467,6 +477,26 @@
               <FileName>ublox_ubx.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Code\Protocol\ublox_ubx.h</FilePath>
+            </File>
+            <File>
+              <FileName>JacTypeDef.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Protocol\JacTypeDef.h</FilePath>
+            </File>
+            <File>
+              <FileName>ProtocolDef.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\Protocol\ProtocolDef.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ProtocolDef.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Protocol\ProtocolDef.h</FilePath>
+            </File>
+            <File>
+              <FileName>UcloudMsgTypeDef.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Protocol\UcloudMsgTypeDef.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -507,6 +537,36 @@
               <FileName>bsp.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Code\Driver\drivers\bsp.h</FilePath>
+            </File>
+            <File>
+              <FileName>gprs.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\Driver\drivers\gprs.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>gprs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Driver\drivers\gprs.h</FilePath>
+            </File>
+            <File>
+              <FileName>sim900a.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\Driver\drivers\sim900a.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>sim900a.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Driver\drivers\sim900a.h</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Code\Driver\drivers\system.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Driver\drivers\system.h</FilePath>
             </File>
           </Files>
         </Group>
