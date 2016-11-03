@@ -17,6 +17,7 @@ void Power_ON(void);
 void GPRS_Wakeup(void);
 void  SysStausCheck(void);
 			
+void serialCom(void);
 #ifdef __cplusplus
     }
 #endif

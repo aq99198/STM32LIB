@@ -468,6 +468,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\Code\App\ucloudTask.h</FilePath>
             </File>
+            <File>
+              <FileName>serial.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\App\serial.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -722,6 +727,11 @@
               <FileName>stm32f10x_rcc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Code\Driver\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Code\Driver\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</FilePath>
             </File>
             <File>
               <FileName>misc.c</FileName>

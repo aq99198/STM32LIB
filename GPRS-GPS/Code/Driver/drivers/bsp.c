@@ -1,6 +1,5 @@
 #include "board.h"
 
-
 void bsp_init(){
 	
 	RCC_Configuration();

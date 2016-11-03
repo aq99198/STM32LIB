@@ -35,6 +35,7 @@ extern INT16U JCLOUD_PORT;
 extern volatile INT8U  SystemStatus;
 
 
+
 #define SYS_STARTUP     	   (0)
 #define SYS_SIM900A_ON    	 (1)
 #define SYS_CONNECT_SERVER   (2)
@@ -45,9 +46,9 @@ extern volatile INT8U  SystemStatus;
 /************************  debug control  ***************************/
 
 //#define DEBUG_ON    /* watch the stack */
-#define SIM900A_DEBUG_ON
-#define UCLOUD_DEBUG_ON
-#define GPS_DEBUG_ON
+//#define SIM900A_DEBUG_ON
+//#define UCLOUD_DEBUG_ON
+//#define GPS_DEBUG_ON
 
 
 /************************ the global Function ***************************/

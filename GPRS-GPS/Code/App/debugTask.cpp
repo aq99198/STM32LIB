@@ -133,7 +133,7 @@ void DebugTask::DebugLoop(void){
 			
 			OSTimeDly(1000);
 			
-			//LED0_TOGGLE;
+			LED0_TOGGLE;
 		}
 		
     //OSTimeDly(300);

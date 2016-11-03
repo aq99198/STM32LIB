@@ -14,7 +14,7 @@ int main(void)
 	
 			bsp_init();
 	
-			SystemStatus = SYS_STARTUP;
+			SystemStatus = SYS_SIM900A_ON;
 	
       OSInit();
 
@@ -45,23 +45,26 @@ void App_Task0()
 	
 	SerialConsole = new CUartDriver(USART1_IDX);
 	
-	Facade();
+	//Facade();
 	
-	DebugTask *debugTask = DebugTask::GetInstance();
-  debugTask->Run();
+	//DebugTask *debugTask = DebugTask::GetInstance();
+  //debugTask->Run();
 	
-	CUbloxGPS * gps = CUbloxGPS::GetInstance();
-  gps->Run();
+	//CUbloxGPS * gps = CUbloxGPS::GetInstance();
+  //gps->Run();
 	
 	/* This task should be put at the end */
-	Ucloud *server = Ucloud::getIntance();
-  server->Run();
-	
+	//Ucloud *server = Ucloud::getIntance();
+  //server->Run();
+	uint8_t c = 0xaa;
 	while(1)
 	{
 		
 		//printf("printTest\r\n");
-		OSTimeDly(30);
+		//OSTimeDly(1);
+		serialCom();
+		//SerialConsole->write(&c,1);
+		//UART1_send_byte(c);
 		//LED0_TOGGLE;
 	}
 }
