@@ -13,4 +13,5 @@
 obj/
 patches/
 Debug/
+NAZE/
 startup_stm32f10x_md_gcc.s

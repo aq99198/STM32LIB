@@ -52,7 +52,7 @@ void SysInit(void){
     gpioInit(GPIOA, &gpio);
     gpioInit(GPIOB, &gpio);
     gpioInit(GPIOC, &gpio);
-
+		
     // Turn off JTAG port 'cause we're using the GPIO for leds
 #define AFIO_MAPR_SWJ_CFG_NO_JTAG_SW            (0x2 << 24)
     AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_NO_JTAG_SW;

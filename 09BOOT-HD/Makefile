@@ -53,7 +53,7 @@ COMMON_SRC	 =main.c \
 
 # Source files for the NAZE target
 NAZE_SRC	 = drv_gpio.c\
-			dev_serial.c\
+			drv_serial.c\
 			drv_SysTick.c\
 			drv_uart.c\
 		   $(HIGHEND_SRC) \
@@ -67,8 +67,7 @@ NAZE_SRC	 = drv_gpio.c\
 .PRECIOUS: %.s
 
 # Search path for baseflight sources
-VPATH		:= $(SRC_DIR):$(SRC_DIR)/startups
-DRVPATH		:= $(SRC_DIR):$(SRC_DIR)/drivers
+VPATH		:= $(SRC_DIR):$(SRC_DIR)/startups:$(SRC_DIR)/drivers
 
 # Search path and source files for the CMSIS sources
 VPATH		:= $(DRVPATH):$(VPATH):$(CMSIS_DIR)/CM3/CoreSupport:$(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
@@ -91,6 +90,7 @@ OBJCOPY		 = arm-none-eabi-objcopy
 # Tool options.
 #
 INCLUDE_DIRS	 = $(SRC_DIR) \
+		   $(SRC_DIR)/drivers \
 		   $(STDPERIPH_DIR)/inc \
 		   $(CMSIS_DIR)/CM3/CoreSupport \
 		   $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x \

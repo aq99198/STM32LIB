@@ -1,0 +1,351 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.20.0.0
+Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: jin jin, jin, LIC=VGX74-FHBFJ-0NTAM-XU4GZ-IEFBA-8WHDU
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.20
+Toolchain Path:  E:\tools\Keil5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 2 (build 183)
+Assembler:       Armasm.exe V5.06 update 2 (build 183)
+Linker/Locator:  ArmLink.exe V5.06 update 2 (build 183)
+Library Manager: ArmAr.exe V5.06 update 2 (build 183)
+Hex Converter:   FromElf.exe V5.06 update 2 (build 183)
+CPU DLL:         SARMCM3.DLL V5.20
+Dialog DLL:      DCM.DLL V1.13.7.0
+Target DLL:      UL2CM3.DLL V1.157.18.0
+Dialog DLL:      TCM.DLL V1.14.9.0
+ 
+<h2>Project:</h2>
+D:\04project\01FC\11baseflight\STM32LIB\STM32-OV7670\OV7670.uvprojx
+Project File Date:  11/06/2016
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 2 (build 183)', folder: 'E:\tools\Keil5\ARM\ARMCC\Bin'
+Build target 'OV7670'
+compiling IIC.C...
+user\IIC.C(18): error:  #20: identifier "U8" is undefined
+  U8 IICDadd=0x42;//IIC?è±???Ö·<<1
+user\IIC.C(24): warning:  #223-D: function "SDA_MO" declared implicitly
+  	SDA_MO();
+user\IIC.C(25): warning:  #223-D: function "IOSET" declared implicitly
+  	
+SCL_H;
+user\IIC.C(25): error:  #20: identifier "GPIOB" is undefined
+  	
+SCL_H;
+user\IIC.C(25): warning:  #223-D: function "BIT" declared implicitly
+  	
+SCL_H;
+user\IIC.C(27): warning:  #223-D: function "delayus" declared implicitly
+  	delayus(IIC_CT);
+user\IIC.C(28): warning:  #223-D: function "IOCLR" declared implicitly
+  	
+SDA_L;
+user\IIC.C(38): warning:  #223-D: function "SDA_MO" declared implicitly
+  	SDA_MO();
+user\IIC.C(39): warning:  #223-D: function "IOCLR" declared implicitly
+  	
+SCL_L;
+user\IIC.C(39): error:  #20: identifier "GPIOB" is undefined
+  	
+SCL_L;
+user\IIC.C(39): warning:  #223-D: function "BIT" declared implicitly
+  	
+SCL_L;
+user\IIC.C(41): warning:  #223-D: function "delayus" declared implicitly
+  	delayus(IIC_CT);
+user\IIC.C(42): warning:  #223-D: function "IOSET" declared implicitly
+  	
+SCL_H;
+user\IIC.C(50): error:  #20: identifier "U8" is undefined
+  U8 IICACK(U8 ack)	 //reentrant
+user\IIC.C(50): error:  #20: identifier "U8" is undefined
+  U8 IICACK(U8 ack)	 //reentrant
+user\IIC.C(52): error:  #20: identifier "U8" is undefined
+  	U8 ret=0;
+user\IIC.C(53): warning:  #223-D: function "delayus" declared implicitly
+  	delayus(IIC_CT);	
+user\IIC.C(54): warning:  #223-D: function "SDA_MIN" declared implicitly
+  	SDA_MIN();	
+user\IIC.C(56): warning:  #223-D: function "IOSET" declared implicitly
+  		
+SDA_H;//?Å¿??ý¾???
+user\IIC.C(56): error:  #20: identifier "GPIOB" is undefined
+  		
+SDA_H;//?Å¿??ý¾???
+user\IIC.C(56): warning:  #223-D: function "BIT" declared implicitly
+  		
+SDA_H;//?Å¿??ý¾???
+user\IIC.C(58): warning:  #223-D: function "IOCLR" declared implicitly
+  		
+SDA_L;
+user\IIC.C(70): error:  #20: identifier "U8" is undefined
+  void IICWByte(U8 sdata)  //reentrant//Thigh,Tlow>2US ????
+user\IIC.C(72): error:  #20: identifier "U8" is undefined
+  	U8 i;
+user\IIC.C(73): warning:  #223-D: function "SDA_MO" declared implicitly
+  	SDA_MO();
+user\IIC.C(77): warning:  #223-D: function "IOSET" declared implicitly
+  			
+SDA_H;
+user\IIC.C(77): error:  #20: identifier "GPIOB" is undefined
+  			
+SDA_H;
+user\IIC.C(77): warning:  #223-D: function "BIT" declared implicitly
+  			
+SDA_H;
+user\IIC.C(79): warning:  #223-D: function "IOCLR" declared implicitly
+  			
+SDA_L;
+user\IIC.C(80): warning:  #223-D: function "delayus" declared implicitly
+  		delayus(IIC_CT);//NOP();	//delayus()
+user\IIC.C(90): error:  #20: identifier "U8" is undefined
+  U8 IICRByte(void)  //reentrant
+user\IIC.C(92): error:  #20: identifier "U8" is undefined
+  	U8 ret,i;
+user\IIC.C(93): warning:  #223-D: function "IOSET" declared implicitly
+  	
+SDA_H;
+user\IIC.C(93): error:  #20: identifier "GPIOB" is undefined
+  	
+SDA_H;
+user\IIC.C(93): warning:  #223-D: function "BIT" declared implicitly
+  	
+SDA_H;
+user\IIC.C(94): warning:  #223-D: function "SDA_MIN" declared implicitly
+  	SDA_MIN();
+user\IIC.C(98): warning:  #223-D: function "delayus" declared implicitly
+  		delayus(IIC_CT);//NOP();
+user\IIC.C(102): warning:  #223-D: function "IOCLR" declared implicitly
+  		
+SCL_L;
+user\IIC.C(109): error:  #20: identifier "U8" is undefined
+  void IICDEV_WByte(U8 add,U8 d)
+user\IIC.C(109): error:  #20: identifier "U8" is undefined
+  void IICDEV_WByte(U8 add,U8 d)
+user\IIC.C(124): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RByte(U8 add)
+user\IIC.C(124): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RByte(U8 add)
+user\IIC.C(126): error:  #20: identifier "U8" is undefined
+  	U8 d;
+user\IIC.C(147): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RStr(U8 add,U8 len,U8 *buf)
+user\IIC.C(147): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RStr(U8 add,U8 len,U8 *buf)
+user\IIC.C(147): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RStr(U8 add,U8 len,U8 *buf)
+user\IIC.C(147): error:  #20: identifier "U8" is undefined
+  U8 IICDEV_RStr(U8 add,U8 len,U8 *buf)
+user\IIC.C(149): error:  #20: identifier "U8" is undefined
+  	U8 d;
+user\IIC.C: 25 warnings, 23 errors
+compiling fsmc_sram.c...
+compiling core_cm3.c...
+compiling OV7670.C...
+user\OV7670.C(27): error:  #20: identifier "U8" is undefined
+  const U8 OV7670_REG[][2]={
+user\OV7670.C(193): error:  #20: identifier "U16" is undefined
+  void OV7670_config_window(U16 startx,U16 starty,U16 width,U16 height)
+user\OV7670.C(193): error:  #20: identifier "U16" is undefined
+  void OV7670_config_window(U16 startx,U16 starty,U16 width,U16 height)
+user\OV7670.C(193): error:  #20: identifier "U16" is undefined
+  void OV7670_config_window(U16 startx,U16 starty,U16 width,U16 height)
+user\OV7670.C(193): error:  #20: identifier "U16" is undefined
+  void OV7670_config_window(U16 startx,U16 starty,U16 width,U16 height)
+user\OV7670.C(195): error:  #20: identifier "U16" is undefined
+  	U16 endx,endy;
+user\OV7670.C(196): error:  #20: identifier "U8" is undefined
+  	U8 x_reg,y_reg,temp;
+user\OV7670.C(199): warning:  #223-D: function "IICDEV_RByte" declared implicitly
+  	x_reg=IICDEV_RByte(0x32);//HREF
+user\OV7670.C(205): warning:  #223-D: function "IICDEV_WByte" declared implicitly
+  	IICDEV_WByte(0x32,temp);//HREF
+user\OV7670.C(375): error:  #20: identifier "U8" is undefined
+  	U8 i;
+user\OV7670.C(376): warning:  #223-D: function "IOSET" declared implicitly
+  	
+WDN_H;
+user\OV7670.C(376): error:  #20: identifier "GPIOB" is undefined
+  	
+WDN_H;
+user\OV7670.C(376): warning:  #223-D: function "BIT" declared implicitly
+  	
+WDN_H;
+user\OV7670.C(377): warning:  #223-D: function "delayms" declared implicitly
+  	delayms(1);
+user\OV7670.C(378): warning:  #223-D: function "IOCLR" declared implicitly
+  	
+WDN_L;
+user\OV7670.C(383): warning:  #223-D: function "IICDEV_WByte" declared implicitly
+  	IICDEV_WByte(0x12, 0x80);//SCCB¸´Î»
+user\OV7670.C(385): warning:  #223-D: function "ARRLEN" declared implicitly
+  	for(i=0;i<ARRLEN(OV7670_REG);i++)
+user\OV7670.C(391): error:  #20: identifier "CAMWIDTH" is undefined
+  	OV7670_config_window(402,20,CAMWIDTH*2,CAMHEIGHT*5/3);//200*100??YUVÍ¼??,Ö»È¡Y??Îª100*100
+user\OV7670.C(391): error:  #20: identifier "CAMHEIGHT" is undefined
+  	OV7670_config_window(402,20,CAMWIDTH*2,CAMHEIGHT*5/3);//200*100??YUVÍ¼??,Ö»È¡Y??Îª100*100
+user\OV7670.C: 8 warnings, 11 errors
+compiling lcd_drv.c...
+user\lcd_drv.c(60): error:  #20: identifier "LCD_HEIGHT" is undefined
+  	LCD_WR_REG(0x0020, LCD_HEIGHT-1-y); /* GRAM horizontal Address */
+user\lcd_drv.c(67): error:  #20: identifier "LCD_HEIGHT" is undefined
+  	LCD_WR_REG(0x0050, LCD_HEIGHT-1-y1); /* Horizontal GRAM Start Address */
+user\lcd_drv.c(75): error:  #20: identifier "LCD_COLOR" is undefined
+  void LCD_DrawPixel(U16 x,U16 y,LCD_COLOR c)
+user\lcd_drv.c(77): error:  #20: identifier "LCD_WIDTH" is undefined
+  	if((x<LCD_WIDTH)&&(y<LCD_HEIGHT))
+user\lcd_drv.c(77): error:  #20: identifier "LCD_HEIGHT" is undefined
+  	if((x<LCD_WIDTH)&&(y<LCD_HEIGHT))
+user\lcd_drv.c(84): error:  #20: identifier "LCD_COLOR" is undefined
+  U8 LCD_ReadPixel(U16 x,U16 y,LCD_COLOR *c)
+user\lcd_drv.c(86): error:  #20: identifier "LCD_WIDTH" is undefined
+  	if((x<LCD_WIDTH)&&(y<LCD_HEIGHT))
+user\lcd_drv.c(86): error:  #20: identifier "LCD_HEIGHT" is undefined
+  	if((x<LCD_WIDTH)&&(y<LCD_HEIGHT))
+user\lcd_drv.c(95): error:  #20: identifier "LCD_COLOR" is undefined
+  void LCD_HLine(U16 x0, U16 y0, U16 x1,LCD_COLOR c)
+user\lcd_drv.c(105): error:  #20: identifier "LCD_COLOR" is undefined
+  void LCD_VLine(U16 x0, U16 y0, U16 y1,LCD_COLOR c)
+user\lcd_drv.c(116): error:  #20: identifier "LCD_COLOR" is undefined
+  void LCD_FillScr(LCD_COLOR c)
+user\lcd_drv.c(119): error:  #20: identifier "LCD_WIDTH" is undefined
+  	for(x=0;x<LCD_WIDTH;x++)
+user\lcd_drv.c(121): error:  #20: identifier "LCD_HEIGHT" is undefined
+  		for(y=0;y<LCD_HEIGHT;y++)
+user\lcd_drv.c(132): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+  	FSMC_LCD_Init();
+user\lcd_drv.c: 1 warning, 13 errors
+compiling main.c...
+compiling stm32f10x_it.c...
+user\stm32f10x_it.c(64): error:  #20: identifier "mainflag" is undefined
+  		if(mainflag&FLAG_START)
+user\stm32f10x_it.c(64): error:  #20: identifier "FLAG_START" is undefined
+  		if(mainflag&FLAG_START)
+user\stm32f10x_it.c(69): error:  #20: identifier "FLAG_BUSY" is undefined
+  		else if((mainflag&FLAG_BUSY)==0)
+user\stm32f10x_it.c: 0 warnings, 3 errors
+compiling system_stm32f10x.c...
+compiling misc.c...
+compiling stm32f10x_adc.c...
+compiling stm32f10x_bkp.c...
+compiling stm32f10x_crc.c...
+compiling stm32f10x_can.c...
+compiling stm32f10x_dbgmcu.c...
+compiling stm32f10x_dac.c...
+compiling stm32f10x_exti.c...
+compiling stm32f10x_dma.c...
+compiling stm32f10x_fsmc.c...
+compiling stm32f10x_flash.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_i2c.c...
+compiling stm32f10x_iwdg.c...
+compiling stm32f10x_pwr.c...
+compiling stm32f10x_rtc.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_sdio.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_usart.c...
+compiling stm32f10x_wwdg.c...
+compiling system_stm32f10x.c...
+compiling AsciiLib.c...
+compiling AsciiLib2.c...
+compiling GUI_Basic.c...
+GUI\GUI_Basic.c(21): error:  #20: identifier "Asc8x5_tab" is undefined
+  const FONT Font8x5={6,8,1,32,127,Asc8x5_tab};
+GUI\GUI_Basic.c(22): error:  #20: identifier "Asc16x8_tab" is undefined
+  const FONT Font16x8={8,16,1,32,127,Asc16x8_tab};
+GUI\GUI_Basic.c(24): error:  #20: identifier "GUI_COLOR" is undefined
+  GUI_COLOR	GUI_ForeColor=GUI_black;//Ç°¾°É«
+GUI\GUI_Basic.c(24): error:  #20: identifier "GUI_black" is undefined
+  GUI_COLOR	GUI_ForeColor=GUI_black;//Ç°¾°É«
+GUI\GUI_Basic.c(25): error:  #20: identifier "GUI_COLOR" is undefined
+  GUI_COLOR	GUI_BackColor=GUI_white;//±³¾°É«
+GUI\GUI_Basic.c(25): error:  #20: identifier "GUI_white" is undefined
+  GUI_COLOR	GUI_BackColor=GUI_white;//±³¾°É«
+GUI\GUI_Basic.c(30): error:  #20: identifier "GUI_COLOR" is undefined
+  GUI_COLOR GUI_Buffer[LCD_HEIGHT][LCD_WIDTH/2];//??Ê¾?????ý¾ÝµÄ»º³?
+GUI\GUI_Basic.c(30): error:  #20: identifier "LCD_HEIGHT" is undefined
+  GUI_COLOR GUI_Buffer[LCD_HEIGHT][LCD_WIDTH/2];//??Ê¾?????ý¾ÝµÄ»º³?
+GUI\GUI_Basic.c(30): error:  #20: identifier "LCD_WIDTH" is undefined
+  GUI_COLOR GUI_Buffer[LCD_HEIGHT][LCD_WIDTH/2];//??Ê¾?????ý¾ÝµÄ»º³?
+GUI\GUI_Basic.c(32): error:  #20: identifier "LCD_COLOR" is undefined
+  LCD_COLOR GUI_ColorTab[16]={
+GUI\GUI_Basic.c(33): error:  #20: identifier "COLOR_white" is undefined
+  COLOR_white,COLOR_black,COLOR_brown,COLOR_red,
+GUI\GUI_Basic.c(33): error:  #20: identifier "COLOR_black" is undefined
+  COLOR_white,COLOR_black,COLOR_brown,COLOR_red,
+GUI\GUI_Basic.c(33): error:  #20: identifier "COLOR_brown" is undefined
+  COLOR_white,COLOR_black,COLOR_brown,COLOR_red,
+GUI\GUI_Basic.c(33): error:  #20: identifier "COLOR_red" is undefined
+  COLOR_white,COLOR_black,COLOR_brown,COLOR_red,
+GUI\GUI_Basic.c(34): error:  #20: identifier "COLOR_orange" is undefined
+  COLOR_orange,COLOR_yellow,COLOR_green,COLOR_blue,
+GUI\GUI_Basic.c(34): error:  #20: identifier "COLOR_yellow" is undefined
+  COLOR_orange,COLOR_yellow,COLOR_green,COLOR_blue,
+GUI\GUI_Basic.c(34): error:  #20: identifier "COLOR_green" is undefined
+  COLOR_orange,COLOR_yellow,COLOR_green,COLOR_blue,
+GUI\GUI_Basic.c(34): error:  #20: identifier "COLOR_blue" is undefined
+  COLOR_orange,COLOR_yellow,COLOR_green,COLOR_blue,
+GUI\GUI_Basic.c(35): error:  #20: identifier "COLOR_purple" is undefined
+  COLOR_purple,COLOR_darkgray,COLOR_darkred,COLOR_darkgreen,
+GUI\GUI_Basic.c(35): error:  #20: identifier "COLOR_darkgray" is undefined
+  COLOR_purple,COLOR_darkgray,COLOR_darkred,COLOR_darkgreen,
+GUI\GUI_Basic.c(35): error:  #20: identifier "COLOR_darkred" is undefined
+  COLOR_purple,COLOR_darkgray,COLOR_darkred,COLOR_darkgreen,
+GUI\GUI_Basic.c(35): error:  #20: identifier "COLOR_darkgreen" is undefined
+  COLOR_purple,COLOR_darkgray,COLOR_darkred,COLOR_darkgreen,
+GUI\GUI_Basic.c(36): error:  #20: identifier "COLOR_darkyellow" is undefined
+  COLOR_darkyellow,COLOR_darkblue,COLOR_darkcyan,COLOR_lightgray
+GUI\GUI_Basic.c(36): error:  #20: identifier "COLOR_darkblue" is undefined
+  COLOR_darkyellow,COLOR_darkblue,COLOR_darkcyan,COLOR_lightgray
+GUI\GUI_Basic.c(36): error:  #20: identifier "COLOR_darkcyan" is undefined
+  COLOR_darkyellow,COLOR_darkblue,COLOR_darkcyan,COLOR_lightgray
+GUI\GUI_Basic.c(36): error:  #20: identifier "COLOR_lightgray" is undefined
+  COLOR_darkyellow,COLOR_darkblue,COLOR_darkcyan,COLOR_lightgray
+GUI\GUI_Basic.c(45): error:  #20: identifier "LCD_COLOR" is undefined
+  	LCD_COLOR c;
+GUI\GUI_Basic.c(47): warning:  #223-D: function "LCD_Setxy" declared implicitly
+  	LCD_Setxy(0,0);
+GUI\GUI_Basic.c(53): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  			LCD_WR_Data(c);
+GUI\GUI_Basic.c(58): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  			LCD_WR_Data(c);
+GUI\GUI_Basic.c(68): error:  #20: identifier "LCD_COLOR" is undefined
+  	LCD_COLOR c;	
+GUI\GUI_Basic.c(69): warning:  #223-D: function "LCD_Setxy" declared implicitly
+  	LCD_Setxy(x0,y0);
+GUI\GUI_Basic.c(75): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  			LCD_WR_Data(c);
+GUI\GUI_Basic.c(83): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  			LCD_WR_Data(c);
+GUI\GUI_Basic.c(93): error:  #20: identifier "LCD_COLOR" is undefined
+  	LCD_COLOR c;	
+GUI\GUI_Basic.c(95): warning:  #223-D: function "LCD_SetArea" declared implicitly
+  	LCD_SetArea(x0,y0,x1,y1);	
+GUI\GUI_Basic.c(103): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  				LCD_WR_Data(c);
+GUI\GUI_Basic.c(111): warning:  #223-D: function "LCD_WR_Data" declared implicitly
+  				LCD_WR_Data(c);
+GUI\GUI_Basic.c(120): error:  #20: identifier "GUI_COLOR" is undefined
+  void GUI_DrawPixel(U16 x,U16 y,GUI_COLOR c)
+GUI\GUI_Basic.c: 9 warnings, 30 errors
+compiling GUI_PRINTF.c...
+".\Objects\OV7670.axf" - 80 Error(s), 43 Warning(s).
+
+<h2>Collection of Component include folders:</h2>
+  D:\04project\01FC\11baseflight\STM32LIB\STM32-OV7670\RTE
+  E:\tools\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Target not created.
+Build Time Elapsed:  00:00:07
+</pre>
+</body>
+</html>

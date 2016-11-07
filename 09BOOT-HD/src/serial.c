@@ -89,9 +89,6 @@ typedef struct box_t {
     const uint8_t permanentId;      // Permanent ID for reporting to GUI
 } box_t;
 
-static const box_t boxes[] = {
-
-};
 
 // this is calculated at startup based on enabled features.
 // this is the number of filled indexes in above array
@@ -392,7 +389,7 @@ void systemReset(bool toBootloader)
     if (toBootloader) {
         // 1FFFF000 -> 20000200 -> SP
         // 1FFFF004 -> 1FFFF021 -> PC
-        *((uint32_t *)0x20004FF0) = 0xDEADBEEF; // 20KB STM32F103   0x20004FF0==19kb
+        *((uint32_t *)0x2000CFF0) = 0xDEADBEEF; // 20KB STM32F103   0x20004FF0==19kb
     }
 
     // write magic value that we're doing a soft reset

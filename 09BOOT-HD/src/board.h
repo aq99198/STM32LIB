@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "stm32f10x_conf.h"
+#include "stm32f10x_gpio.h"
 #include "core_cm3.h"
 
 #ifndef __CC_ARM

@@ -151,7 +151,7 @@ Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
      IMPORT  __main
      IMPORT  SystemInit
-                 LDR     R0, =0x20004FF0
+                 LDR     R0, =0x2000CFF0
                  LDR     R1, =0xDEADBEEF
                  LDR     R2, [R0, #0]
                  STR     R0, [R0, #0] ; Invalidate
