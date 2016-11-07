@@ -41,77 +41,37 @@ OBJECT_DIR	 = $(ROOT)/obj
 BIN_DIR		 = $(ROOT)/obj
 
 # Source files common to all targets
-COMMON_SRC	 = buzzer.c \
-		   cli.c \
-		   config.c \
-		   imu.c \
-		   main.c \
-		   mixer.c \
-		   mw.c \
-		   sensors.c \
-		   serial.c \
-		   rxmsp.c \
-		   drv_gpio.c \
-		   drv_i2c.c \
-		   drv_i2c_soft.c \
-		   drv_system.c \
-		   drv_serial.c \
-		   drv_uart.c \
-		   printf.c \
-		   utils.c \
-		   fw_nav.c \
-		   ibus.c \
-		   sbus.c \
-		   sumd.c \
-		   spektrum.c \
-		   startup_stm32f10x_md_gcc.S \
+COMMON_SRC	 =main.c \
+		   init.c\
+		   serial.c\
+		   startup_stm32f10x_hd_gcc.S \
 		   $(CMSIS_SRC) \
 		   $(STDPERIPH_SRC)
 
 # Source files for full-featured systems
-HIGHEND_SRC	 = gps.c \
-		   drv_softserial.c \
-		   telemetry_common.c \
-		   telemetry_frsky.c \
-		   telemetry_hott.c
+
 
 # Source files for the NAZE target
-NAZE_SRC	 = drv_adc.c \
-		   drv_adxl345.c \
-		   drv_ak8975.c \
-		   drv_bma280.c \
-		   drv_bmp085.c \
-		   drv_ms5611.c \
-		   drv_bmp280.c \
-		   drv_hcsr04.c \
-		   drv_hmc5883l.c \
-		   drv_ledring.c \
-		   drv_mma845x.c \
-		   drv_mpu.c \
-		   drv_l3g4200d.c \
-		   drv_pwm.c \
-		   drv_spi.c \
-		   drv_timer.c \
+NAZE_SRC	 = drv_gpio.c\
+			dev_serial.c\
+			drv_SysTick.c\
+			drv_uart.c\
 		   $(HIGHEND_SRC) \
 		   $(COMMON_SRC)
 
 # Source files for the CJMCU target
-CJMCU_SRC	 = drv_adc.c \
-		   drv_mpu.c \
-		   drv_hmc5883l.c \
-		   drv_pwm.c \
-		   drv_timer.c \
-		   $(COMMON_SRC)
+
 
 # In some cases, %.s regarded as intermediate file, which is actually not.
 # This will prevent accidental deletion of startup code.
 .PRECIOUS: %.s
 
 # Search path for baseflight sources
-VPATH		:= $(SRC_DIR):$(SRC_DIR)/baseflight_startups
+VPATH		:= $(SRC_DIR):$(SRC_DIR)/startups
+DRVPATH		:= $(SRC_DIR):$(SRC_DIR)/drivers
 
 # Search path and source files for the CMSIS sources
-VPATH		:= $(VPATH):$(CMSIS_DIR)/CM3/CoreSupport:$(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
+VPATH		:= $(DRVPATH):$(VPATH):$(CMSIS_DIR)/CM3/CoreSupport:$(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
 CMSIS_SRC	 = $(notdir $(wildcard $(CMSIS_DIR)/CM3/CoreSupport/*.c \
 			               $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x/*.c))
 

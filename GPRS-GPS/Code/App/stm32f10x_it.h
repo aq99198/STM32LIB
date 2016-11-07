@@ -70,6 +70,10 @@ void DMAChannel2_IRQHandler(void);
 void DMA1_Channel4_IRQHandler(void);
 void EXTI0_IRQHandler(void);
 
+
+
+void standbyMode(void);
+
 #ifdef __cplusplus
     }
 #endif 

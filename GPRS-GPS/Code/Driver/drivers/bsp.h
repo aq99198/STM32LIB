@@ -5,6 +5,7 @@
     extern "C" {
 #endif
 
+			void GPRS_POWER_INIT(void);
 void bsp_init(void);
 void TIM5_init(void);
 void led_gpio_init(void);

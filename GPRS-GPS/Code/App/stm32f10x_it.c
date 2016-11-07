@@ -70,6 +70,51 @@ void delay_nms(u32 nCount)
    for(; nCount != 0; nCount--);
 }
 
+
+
+void close_gpio(){
+			GPIO_InitTypeDef GPIO_InitStructure;
+			GPIO_StructInit(&GPIO_InitStructure);
+		
+			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+			GPIO_Init(GPIOA, &GPIO_InitStructure);
+			GPIO_Init(GPIOB, &GPIO_InitStructure);
+			GPIO_Init(GPIOC, &GPIO_InitStructure);
+			GPIO_Init(GPIOD, &GPIO_InitStructure);
+			GPIO_Init(GPIOE, &GPIO_InitStructure);
+}
+
+
+void standbyMode(void){
+
+			__disable_irq();     
+			
+			printf("interrput\r\n");
+//			GPRS_POWER_OFF();
+//			OSTimeDly(800);
+//			GPRS_POWER_ON();          //close GPRS
+//			OSTimeDly(800);
+//			GPRS_POWER_OFF();
+//			OSTimeDly(800);
+			printf("gprs power off\r\n");
+						
+			RCC_APB2PeriphResetCmd(0X01FC,DISABLE);	
+		
+			//GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+		
+			//close_gpio();
+			
+			RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);	
+			PWR_WakeUpPinCmd(ENABLE);
+			//PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);//STOP??		
+			PWR_EnterSTANDBYMode();                
+	
+}
+
+
+
 // for power control
 void EXTI0_IRQHandler(void)                 
 {
@@ -89,9 +134,14 @@ void EXTI0_IRQHandler(void)
 			printf("gprs power off\r\n");
 						
 			RCC_APB2PeriphResetCmd(0X01FC,DISABLE);	
+		
+			//GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+		
+			close_gpio();
 			
 			RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);	
-			PWR_WakeUpPinCmd(ENABLE);              
+			PWR_WakeUpPinCmd(ENABLE);
+			//PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);//STOP??		
 			PWR_EnterSTANDBYMode();                
   }
 }

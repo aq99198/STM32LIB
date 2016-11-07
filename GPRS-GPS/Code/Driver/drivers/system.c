@@ -5,7 +5,7 @@
 void GPRS_Wakeup(void){
 	JTAG_Set(01);
 	Power_ON();
-	OSTimeDly(30);
+	OSTimeDly(300);
 }
 
 void JTAG_Set(u8 mode)

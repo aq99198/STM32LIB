@@ -1,5 +1,8 @@
 #include "board.h"
 
+
+
+
 void bsp_init(){
 	
 	RCC_Configuration();
@@ -7,6 +10,8 @@ void bsp_init(){
 	led_gpio_init();
 	
 	WakeupPin_Config();
+	
+	GPRS_POWER_INIT();
 	
 	USART_gpio();
 	
@@ -20,11 +25,45 @@ void bsp_init(){
 }
 
 
+void RCC_Configuration_HSI(void)  
+{  
+    RCC_DeInit();//??? RCC?????????  
+  
+    RCC_HSICmd(ENABLE);//??HSI    
+    while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);//??HSI????  
+  
+    //FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);  
+    //FLASH_SetLatency(FLASH_Latency_2);  
+     
+    RCC_HCLKConfig(RCC_SYSCLK_Div1);     
+    RCC_PCLK1Config(RCC_HCLK_Div2);  
+    RCC_PCLK2Config(RCC_HCLK_Div1);  
+      
+    //?? PLL ????????  
+    RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_2);//?????? PLL,???????:ENABLE??DISABLE   
+    RCC_PLLCmd(ENABLE);//??PLL???????,????????  
+    //????? RCC ??????? ??PLL?????  
+    while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);  
+  
+    //??????(SYSCLK) ??PLL??????  
+    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);//?????????   
+    //??PLL?????????????  
+    //  0x00:HSI ??????   
+    //  0x04:HSE??????   
+    //  0x08:PLL??????    
+    while(RCC_GetSYSCLKSource() != 0x08);//??????????????,RCC_SYSCLKSource_PLL  
+  
+}  
+
+
+
 void RCC_Configuration(void)
 {																
 	/* Setup the microcontroller system. Initialize the Embedded Flash Interface,  
 	initialize the PLL and update the SystemFrequency variable. */
-	SystemInit();
+	//SystemInit();
+	
+	RCC_Configuration_HSI();
 	
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	//RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
