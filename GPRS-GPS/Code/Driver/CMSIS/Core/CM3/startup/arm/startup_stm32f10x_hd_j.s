@@ -158,8 +158,10 @@ __Vectors_Size 	EQU 	__Vectors_End - __Vectors
 Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
      IMPORT  __main
-     IMPORT  SystemInit
-				                 
+     IMPORT  RCC_Configuration_HSI
+				                
+					
+
 					
                  LDR     R0, =0x2000BFF0
                  LDR     R1, =0xDEADBEEF
@@ -167,13 +169,15 @@ Reset_Handler    PROC
                  STR     R0, [R0, #0] ; Invalidate
                  CMP     R2, R1
                  BEQ     Reboot_Loader
-                 LDR     R0, =SystemInit
+                 LDR     R0, =RCC_Configuration_HSI
                  BLX     R0
+			
 				 LDR     R1, = __initial_sp        ; restore original stack pointer
-                 MSR     MSP, R1   
-				 
-                 LDR     R0, =__main
+                 MSR     MSP, R1  
+			
+				 LDR     R0, =__main
                  BX      R0
+                
                  ENDP
 
 RCC_APB2ENR      EQU     0x40021018

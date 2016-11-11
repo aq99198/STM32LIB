@@ -1,6 +1,6 @@
 /*
- * This file is part of baseflight
- * Licensed under GPL V3 or modified DCL - see https://github.com/multiwii/baseflight/blob/master/README.md
+ * test file £º test communication with baseflight gcs
+ *
  */
 
 #include "board.h"

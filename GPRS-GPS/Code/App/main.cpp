@@ -3,13 +3,13 @@
 #include "debugTask.h"
 #include "ucloudTask.h"
 #include "ubloxTask.h"
+#include "APlinkTask.h"
 
 
 #include "stm32f10x_it.h"
 
 void App_Task0();
 void  Facade(void);
-
 
 void close_gpio(){
 			GPIO_InitTypeDef GPIO_InitStructure;
@@ -26,41 +26,31 @@ void close_gpio(){
 }
 
 int main(void)
-{
-			
-			//GPRS_Wakeup();
+{	
+			__disable_irq();
 	
-			JTAG_Set(01);
-			//Power_ON(); // 开启外设电源，
+			GPRS_Wakeup();
 	
 			bsp_init();
 	
 			SystemStatus = SYS_SIM900A_ON;
 	
-			close_gpio();
-			
-			//Power_ON();
-	
-			standbyMode();
-	
-	
-	
-//      OSInit();
+      OSInit();
 
-//	    OSTaskCreateExt(
-//											(void (*)(void *)) App_Task0,
-//											(void          * ) 0,
-//											(OS_STK        * )&App_Task_START_Stack[APP_TASK_START_STK_SIZE - 1],
-//											(INT8U         ) APP_TASK_START_PRIO,
-//											(INT16U        ) APP_TASK_START_PRIO,
-//											(OS_STK        * )&App_Task_START_Stack[0],
-//											(INT32U          ) APP_TASK_START_STK_SIZE,
-//											(void          * )0,
-//											(INT16U        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK)
-//									 );
+	    OSTaskCreateExt(
+											(void (*)(void *)) App_Task0,
+											(void          * ) 0,
+											(OS_STK        * )&App_Task_START_Stack[APP_TASK_START_STK_SIZE - 1],
+											(INT8U         ) APP_TASK_START_PRIO,
+											(INT16U        ) APP_TASK_START_PRIO,
+											(OS_STK        * )&App_Task_START_Stack[0],
+											(INT32U          ) APP_TASK_START_STK_SIZE,
+											(void          * )0,
+											(INT16U        )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK)
+									 );
 
-//      OSStart();
-//      return 0;
+      OSStart();
+      return 0;
 }
 
 void App_Task0()
@@ -75,28 +65,26 @@ void App_Task0()
 	SerialConsole = new CUartDriver(USART1_IDX);
 	
 	Facade();
-	
-	DebugTask *debugTask = DebugTask::GetInstance();
-  debugTask->Run();
-	
+//	
+//	DebugTask *debugTask = DebugTask::GetInstance();
+//  debugTask->Run();
+//	
 	CUbloxGPS * gps = CUbloxGPS::GetInstance();
   gps->Run();
+
+	CAPlink *aplink = CAPlink::GetInstance();
+	aplink->Run();
 	
-	/* This task should be put at the end */
+	/* This task necessarily put at the task end */
 	Ucloud *server = Ucloud::getIntance();
   server->Run();
 	
+
 	
-	uint8_t c = 0xaa;
 	while(1)
 	{
 		
-		//printf("printTest\r\n");
-		//OSTimeDly(1);
 		serialCom();
-		//SerialConsole->write(&c,1);
-		//UART1_send_byte(c);
-		//LED0_TOGGLE;
 	}
 }
 
@@ -104,10 +92,11 @@ void App_Task0()
 #define BuildList "**BuildTime " __DATE__" " __TIME__ "\r\n"
 void  Facade(void)
 {
-	DEBUG("************** JOUAV GPRS **************** \r\n");
-	DEBUG("**Version bate v1.4\r\n");
-	DEBUG(BuildList);
-	DEBUG("************** JOUAV GPRS **************** \r\n");
+	PRINT("************** JOUAV GPRS **************** \r\n");
+	
+	PRINT("**Version bate v1.4\r\n");
+	PRINT(BuildList);
+	PRINT("************** JOUAV GPRS **************** \r\n");
 }
 
 

@@ -422,7 +422,6 @@ void serialCom(void)
          // in cli mode, all serial stuff goes to here. enter cli mode by sending #
        //
   
-
         while (serialTotalBytesWaiting(currentPortState->port)) {
             c = serialRead(currentPortState->port);
 

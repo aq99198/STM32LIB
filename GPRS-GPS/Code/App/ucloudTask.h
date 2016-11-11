@@ -28,8 +28,7 @@ public:
     void RcvLoop(void);
 	  bool SendMsg( JCLOUD_MSG_PACK &pck);
 	  void Run();
-		bool m_bConnect;
-	  OS_EVENT *semMutex;
+
 
 private:
 

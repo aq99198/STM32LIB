@@ -8,6 +8,21 @@ void GPRS_Wakeup(void){
 	OSTimeDly(300);
 }
 
+/* system reset  */
+__asm void SystemReset(void)
+{
+ MOV R0, #1           
+ MSR FAULTMASK, R0   
+ LDR R0, =0xE000ED0C  
+ LDR R1, =0x05FA0004  
+ STR R1, [R0]         
+ 
+deadloop
+    B deadloop      
+}
+
+
+
 void JTAG_Set(u8 mode)
 {
 	u32 temp;
@@ -38,9 +53,6 @@ void write_onchip_flash(u32 addr,u8 *p,u16 n)
 {
 	u32 r1;
 	n=n/4;
-	FLASH_Unlock();
-	FLASH_ClearFlag(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
-	FLASH_ErasePage(addr);
 	while(n--)
 	{
 		r1=*(p++);
@@ -50,7 +62,6 @@ void write_onchip_flash(u32 addr,u8 *p,u16 n)
 		FLASH_ProgramWord(addr, r1);
 		addr+=4;
 	}
-	FLASH_Lock();
 }
 
 

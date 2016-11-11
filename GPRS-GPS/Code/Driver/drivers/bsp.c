@@ -5,6 +5,8 @@
 
 void bsp_init(){
 	
+	NVIC_SetVectorTable(NVIC_VectTab_FLASH,0x20000);
+	
 	RCC_Configuration();
 	
 	led_gpio_init();
@@ -61,9 +63,9 @@ void RCC_Configuration(void)
 {																
 	/* Setup the microcontroller system. Initialize the Embedded Flash Interface,  
 	initialize the PLL and update the SystemFrequency variable. */
-	//SystemInit();
+	SystemInit();
 	
-	RCC_Configuration_HSI();
+	//RCC_Configuration_HSI();
 	
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	//RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);

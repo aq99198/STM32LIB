@@ -216,7 +216,7 @@ int CUbloxGPS::RecvGPSMsg(UBX_PACKET &pckt)
                     break;
                 }
             }else{
-							//OSTimeDly(1);  /* Release system resources */
+							OSTimeDly(1);  /* Release system resources */
 						}
 
         }/* end of  inside while */

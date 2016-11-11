@@ -103,7 +103,6 @@ void SIM900A::NReset(void)
 /* TRUE for failure */
 bool  SIM900A::SysInit(INT8 RstFlag)
 {
-    
     UINT8  pinvalue;
     UINT8  retry = 0;
 	
@@ -126,6 +125,8 @@ bool  SIM900A::SysInit(INT8 RstFlag)
         
         ++retry;
     }while( !pinvalue );	
+		
+		
 		
     serialSim900a->clearBuffer();	
 		
@@ -298,7 +299,7 @@ int SIM900A::waitForResp(const UINT8 *resp, UINT32 timeout)
         }
         else
         {
-            OSTimeDly(1);//!< ÊÍ·ÅCPU 
+            OSTimeDly(10);//!< ÊÍ·ÅCPU 
         }
         timerEnd = OSTimeGet();
         if((timerEnd - timerStart) > 1000 * timeout) 

@@ -309,7 +309,7 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x8000000</StartAddress>
+                <StartAddress>0x8020000</StartAddress>
                 <Size>0x20000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
@@ -472,6 +472,16 @@
               <FileName>serial.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\Code\App\serial.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>APlinkTask.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\App\APlinkTask.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>APlinkTask.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\App\APlinkTask.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -649,11 +659,6 @@
           <GroupName>STDPERIPH_DRIVER</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f10x_hd.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\Code\Driver\CMSIS\Core\CM3\startup\arm\startup_stm32f10x_hd.s</FilePath>
-            </File>
-            <File>
               <FileName>system_stm32f10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Code\Driver\CMSIS\Core\CM3\system_stm32f10x.c</FilePath>
@@ -737,6 +742,11 @@
               <FileName>misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Code\Driver\STM32F10x_StdPeriph_Driver\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f10x_hd_j.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\Code\Driver\CMSIS\Core\CM3\startup\arm\startup_stm32f10x_hd_j.s</FilePath>
             </File>
           </Files>
         </Group>

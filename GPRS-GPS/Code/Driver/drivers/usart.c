@@ -316,7 +316,7 @@ void USART2_DMA(unsigned char * data , int len)
 }
 
 
-
+// USART1 DMA IRQHander
 void DMA1_Channel4_IRQHandler(void)
 {
    if( DMA_GetITStatus(DMA1_IT_TC4) == SET )
@@ -347,7 +347,7 @@ void USART1_IRQHandler(void)
 	
 	 if (USART_GetFlagStatus(USART1, USART_FLAG_ORE) != RESET)  
    {  
-       USART_ReceiveData(USART1);  
+       //USART_ReceiveData(USART1);  
 			 USART_ClearFlag(USART1, USART_FLAG_ORE);  
    }  
 	

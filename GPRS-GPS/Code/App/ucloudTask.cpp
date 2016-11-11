@@ -121,11 +121,12 @@ bool Ucloud::Init(INT8 RstFlag)
 	read_onchip_flash(0x0803f800,(u8 *)&JCLOUD_APID,sizeof(UINT32));	
 	read_onchip_flash(0x0803f804,(u8 *)&JCLOUD_GSMID,sizeof(UINT32));	
 	read_onchip_flash(0x0803f808,(u8 *)&JCLOUD_IP,sizeof(UINT32));	
-	read_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT16));	
+	read_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));	
 	
-	PRINT("apid:%08x gsmid:%08x ip:%08x port:%08x\r\n\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
+	
+	PRINT("apid:%08d gsmid:%08d ip:%08d port:%08d\r\n\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
 
-	while(gprs->GprsPrepare(RstFlag))
+	while(gprs->GprsPrepare(RstFlag,JCLOUD_IP,JCLOUD_PORT))
 	{
 		if(cnt>0)
 		{
@@ -206,8 +207,6 @@ void Ucloud::RcvMsgTask(void* param)
 void Ucloud::SendLoop()
 {
 	UINT32 timerEnd, timerStart;
-	bool bConnect;
-	UINT8 resetFlag;
 	
 	OSTimeDly(DELAY_MS);
 	SendIdentity();								// 上电发送握手信息
@@ -230,6 +229,7 @@ void Ucloud::SendLoop()
 			timerEnd = OSTimeGet();	
 
 		  OSSemPend(semMutex,0,&g_u8Rerr);
+			/* timeout reconnection */
   		if(timerEnd > (TIMEOUT_TO_RECONNECT_MS + m_uLatestTime_ms)) // 超时重启
 			{
 				DEBUG("reconnect!!\r\n");
@@ -239,6 +239,8 @@ void Ucloud::SendLoop()
 			}	
 			OSSemPost(semMutex);
 			
+			
+			/* timing send heartbeat  */
 			if(((timerEnd - timerStart) > HEARTBEAT_MSG_INTERVAL_MS) && (bConnect == true)) 
 			{	
 				SendHeartbeat();   				
@@ -246,6 +248,8 @@ void Ucloud::SendLoop()
 			}
 			OSTimeDly(SEND_POLL_INTERVAL_MS);	
 
+			
+			/* reconnection  */
 			while( !bConnect ) 
 			{	
 				if(resetFlag == 1)	// restart sim900a
@@ -374,7 +378,7 @@ INT32 Ucloud::RecvMsg(JCLOUD_MSG_PACK & pck)
     timerStart = OSTimeGet();	
 	  do
 	  {
-	      avail = gprs->GetDataLen();
+	    avail = gprs->GetDataLen();
 		  timerEnd = OSTimeGet();
 		  if(timerEnd >= (timerStart + 100000))
 		  {

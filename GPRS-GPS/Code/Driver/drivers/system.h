@@ -18,6 +18,9 @@ void GPRS_Wakeup(void);
 void  SysStausCheck(void);
 			
 void serialCom(void);
+			
+void jump(void);		
+void SystemReset(void);	
 #ifdef __cplusplus
     }
 #endif

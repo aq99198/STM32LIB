@@ -5,8 +5,8 @@
 
 int main(void)
 {
-		SysInit();
-	
+	SysInit();
+
 	serialInit(115200);
 	while(1){
 		serialCom();

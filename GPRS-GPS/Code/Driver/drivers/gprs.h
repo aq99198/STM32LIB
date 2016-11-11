@@ -120,7 +120,7 @@ public:
      */
     INT32 shutTcp(void);  
 		
-		INT32 TcpPrepare(INT8 RstFlag);
+		INT32 TcpPrepare(INT8 RstFlag,UINT32 JCLOUD_IP,UINT32 JCLOUD_PORT);
 	
 		#else
 	

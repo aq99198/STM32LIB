@@ -9,7 +9,7 @@
 
 
 INT8U                g_u8Rerr;          // the error code for create EVENT
-
+INT8U								 g_waitTime =10;
 
 
 OS_EVENT         		*SemUart1 = OS_EVENT_NULL;
@@ -34,6 +34,15 @@ INT32U JCLOUD_APID = 0;//0xABCD0001;
 INT32U JCLOUD_GSMID = 0;//0x00000002;
 INT32U JCLOUD_IP = 0;
 INT16U JCLOUD_PORT = 0;
+
+// connection
+bool m_bConnect;
+bool bConnect;
+
+OS_EVENT *semMutex;
+UINT8 resetFlag;
+
+
 volatile INT8U  SystemStatus;
 
 

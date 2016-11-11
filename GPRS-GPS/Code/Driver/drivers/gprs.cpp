@@ -30,7 +30,6 @@ GPRS* GPRS::getInstance()
 
 INT32 GPRS::init( INT32 baudRate, INT8 RstFlag)
 {
-
     if( simInStance->SysInit(RstFlag) )
     {
 				#ifdef SIM900A_DEBUG_ON		
@@ -351,6 +350,7 @@ INT32 GPRS::connectTcp(const char *ip, INT32 port)
         if( retry > JOIN_RETRY_TIMES )
         {
             ERROR("ERROR:CIPSTART");
+						OSTimeDly(1);
             return 1;
         }
     }while(  simInStance->sendCmdAndWaitForResp(cipstart, "OK\r\n\r\nCONNECT", DEFAULT_TIMEOUT*3) ) ;
@@ -429,11 +429,16 @@ INT32 GPRS::shutTcp(void)
 }
 
 
-INT32 GPRS::TcpPrepare(INT8 RstFlag) 
+INT32 GPRS::TcpPrepare(INT8 RstFlag,UINT32 JCLOUD_IP,UINT32 JCLOUD_PORT) 
 {
-		DEBUG("Try-PowerUp-the-SIM900A-GPRS-Business\r\n");
-	
-    if( init(115200, RstFlag) )
+		int num = 100;
+    char str[25];
+		PRINT("Try-PowerUp-the-SIM900A-GPRS-Business\r\n");  
+    sprintf(str,"%d.%d.%d.%d",JCLOUD_IP&0xff,JCLOUD_IP>>8&0xff,JCLOUD_IP>>16&0xff,JCLOUD_IP>>24&0xff);
+		PRINT("IP:%s port:%d\r\n",str,JCLOUD_PORT);
+
+		/* config SIM900A(GPRS) */
+		if( init(115200, RstFlag) )
     {
 				#ifdef SIM900A_DEBUG_ON		
         DEBUG("SIM900A  ERROR\r\n");
@@ -453,7 +458,7 @@ INT32 GPRS::TcpPrepare(INT8 RstFlag)
         {
 						
             DEBUG("commader							[OK]\r\n");
-					  if( connectTcp("120.24.6.72",8000) ) //
+					  if( connectTcp(str,JCLOUD_PORT) ) //
 					  //if( connectTcp("121.69.39.114",9120) ) //  test server
             //if( connectTcp("www.u-cloud.cn",9119) ) // "124.202.183.106",9120  "101.200.213.143",4000 "120.24.6.72",2222
             {
@@ -468,6 +473,7 @@ INT32 GPRS::TcpPrepare(INT8 RstFlag)
         
         }
     }
+
 
     return 0;
 }
