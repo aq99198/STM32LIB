@@ -96,7 +96,7 @@ public:
      *      0 on success
      *      -1 on error
      */
-    INT32 connectTcp(const char* ip, INT32 port); 
+    INT32 connectTcp(); 
 
      /** send data to TCP server
      *  @param  data    data that will be send to TCP server
@@ -120,7 +120,7 @@ public:
      */
     INT32 shutTcp(void);  
 		
-		INT32 TcpPrepare(INT8 RstFlag,UINT32 JCLOUD_IP,UINT32 JCLOUD_PORT);
+		INT32 TcpPrepare(INT8 RstFlag);
 	
 		#else
 	

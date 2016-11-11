@@ -155,6 +155,7 @@ void   CAPlink::Run()
 */
 void   CAPlink::RecvMsgTask()
 {
+	
 	if( !m_pAPlink->m_bRun )
 	{
 		OSTaskSuspend(OS_PRIO_SELF);
@@ -186,7 +187,6 @@ void   CAPlink::RecvMsgTask()
         JCLOUD_IP = *((UINT32*)&commpckt.Data[8]);		
         JCLOUD_PORT = *((UINT16*)&commpckt.Data[12]);	
 			
-			
 				/* save on chip flash*/
 				FLASH_Unlock();
 				FLASH_ClearFlag(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
@@ -199,16 +199,15 @@ void   CAPlink::RecvMsgTask()
 				write_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));
 				FLASH_Lock();
 		
-									
+					/* reconnect to jcloud server */
+					//OSSemPend(semMutex,0,&g_u8Rerr);
+					m_bConnect = false;
+					resetFlag = 1;
+					bConnect = m_bConnect;
+					//OSSemPost(semMutex);
+		
+				//OSSemPend(SemUartW1,g_waitTime,&g_u8Rerr);					
 				PRINT("apid:%08d gsmid:%08d ip:%08d port:%08d\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
-				
-			
-				/* reconnect to jcloud server */
-				//OSSemPend(semMutex,0,&g_u8Rerr);
-				m_bConnect = false;
-				resetFlag = 1;
-				bConnect = m_bConnect;
-				//OSSemPost(semMutex);
 			
 			break;
 			case 01:

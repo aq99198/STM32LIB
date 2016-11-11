@@ -118,13 +118,10 @@ bool Ucloud::Init(INT8 RstFlag)
 	
 	read_onchip_flash(0x0803f800,(u8 *)&JCLOUD_APID,sizeof(UINT32));	
 	read_onchip_flash(0x0803f804,(u8 *)&JCLOUD_GSMID,sizeof(UINT32));	
-	read_onchip_flash(0x0803f808,(u8 *)&JCLOUD_IP,sizeof(UINT32));	
-	read_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));	
-	
-	
+
 	PRINT("apid:%08d gsmid:%08d ip:%08d port:%08d\r\n\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
 
-	while(gprs->GprsPrepare(RstFlag,JCLOUD_IP,JCLOUD_PORT))
+	while(gprs->GprsPrepare(RstFlag))
 	{
 		if(cnt>0)
 		{
@@ -554,13 +551,13 @@ void Ucloud::SendHeartbeat()
 }
 
 
-void Ucloud::SendBat(float bat,float pwr)         //发送电池电压
+void Ucloud::SendBat(float bat,float pwr)        
 {
 	static JCLOUD_MSG_PACK pckt;
 	pckt.msgHead.msgid = JCLOUD_MSG_ID_BAT;
-	pckt.msgHead.msglen = sizeof(float) * 2;       //两个float型数据
+	pckt.msgHead.msglen = sizeof(float) * 2;   
 	
-	memcpy(&pckt.Data[0], &bat, sizeof(float));      //填充数据
+	memcpy(&pckt.Data[0], &bat, sizeof(float));     
 	memcpy(&pckt.Data[4], &pwr, sizeof(float));
 	
 	OSMutexPend(SemUartW5, 0, &g_u8Rerr);
