@@ -17,6 +17,10 @@ void bsp_init(){
 	
 	USART_gpio();
 	
+	/* ADC config and start*/
+	adc_config();
+	adc_start();            
+	
 	USART1_Init();
 	USART2_Init();
 	UART5_Init();

@@ -24,13 +24,7 @@
 
 DebugTask  *DebugTask::_pDebugTask = (DebugTask  *)0 ;
 
-
 /***************THE LOCAL VARIABLES ***************************/
-static UINT8		App_FRFPortHeap[2048];
-static int      App_FRFPortHeapCount=0;
-static void    * DebugMsgQ[FRFPORT_MAX_COMMPACKET_MSG];
-
-int ADIS_IRQ_Flag;
 
 
 DebugTask::DebugTask(){
@@ -114,9 +108,9 @@ void DebugTask::DebugLoop(void){
     {
         OSTaskSuspend(OS_PRIO_SELF);
     }
-		
+		#ifdef DEBUG_ON
 		OS_STK_DATA StackBytes;
-		
+		#endif
 		while(1){
 			#ifdef DEBUG_ON
 			OSTaskStkChk(APP_TASK_START_PRIO, &StackBytes);
@@ -255,3 +249,5 @@ void DebugTask::IMUTask(void){
 
 
 /* end of file */
+
+

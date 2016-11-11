@@ -96,22 +96,9 @@ typedef struct box_t {
 
 // this is calculated at startup based on enabled features.
 // this is the number of filled indexes in above array
-static uint8_t numberBoxItems = 0;
 // from mixer.c
 // cause reboot after MSP processing complete
-static bool pendReboot = false;
 
-static const char pidnames[] =
-    "ROLL;"
-    "PITCH;"
-    "YAW;"
-    "ALT;"
-    "Pos;"
-    "PosR;"
-    "NavR;"
-    "LEVEL;"
-    "MAG;"
-    "VEL;";
 
 typedef enum serialState_t {
     IDLE,
@@ -135,7 +122,6 @@ typedef  struct mspPortState_t {
 
 static mspPortState_t ports[2];
 static mspPortState_t *currentPortState = &ports[0];
-static int numTelemetryPorts = 0;
 
 // static uint8_t checksum, indRX, inBuf[INBUF_SIZE];
 // static uint8_t cmdMSP;
@@ -235,7 +221,7 @@ void serialInit(uint32_t baudrate)
 
 static void evaluateCommand(void)
 {
-    uint32_t i, j, tmp, junk;
+    uint32_t i,junk;
 		static int pitch=0,roll=0;
 #ifdef GPS
     uint8_t wp_no;
@@ -423,7 +409,6 @@ void serialCom(void)
 {
     uint8_t c;
 		int len=1;
-    int i;
 
 
         currentPortState = &ports[0];

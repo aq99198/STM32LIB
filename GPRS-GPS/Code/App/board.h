@@ -49,6 +49,7 @@ typedef float FLOAT32 ;
 #include "usart.h"
 #include "bsp.h"
 #include "system.h"
+#include "adc.h"
 
 #define U_ID_0 (*(uint32_t*)0x1FFFF7E8)
 #define U_ID_1 (*(uint32_t*)0x1FFFF7EC)

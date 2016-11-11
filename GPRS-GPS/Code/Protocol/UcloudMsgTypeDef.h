@@ -15,6 +15,7 @@ enum JCLOUD_MSG_ID
   	JCLOUD_MSG_ID_PUSH_DRONE_HEART        =0x0D,
 	  JCLOUD_MSG_ID_PULL_DRONE_HEART        =0x0E,
 	  JCLOUD_MSG_ID_PUSH_DRONE_CONTENT      =0x0F,
+		JCLOUD_MSG_ID_BAT                     =0x0A,       
 };
 
 #pragma pack(1)

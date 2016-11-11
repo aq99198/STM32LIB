@@ -431,7 +431,6 @@ INT32 GPRS::shutTcp(void)
 
 INT32 GPRS::TcpPrepare(INT8 RstFlag,UINT32 JCLOUD_IP,UINT32 JCLOUD_PORT) 
 {
-		int num = 100;
     char str[25];
 		PRINT("Try-PowerUp-the-SIM900A-GPRS-Business\r\n");  
     sprintf(str,"%d.%d.%d.%d",JCLOUD_IP&0xff,JCLOUD_IP>>8&0xff,JCLOUD_IP>>16&0xff,JCLOUD_IP>>24&0xff);

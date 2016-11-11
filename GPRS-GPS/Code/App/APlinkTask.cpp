@@ -162,10 +162,6 @@ void   CAPlink::RecvMsgTask()
 	
 	static COMMPACKET_t commpckt;
   static int dataLen;
-	static UINT8* data = (UINT8*)&commpckt.msgHead.sync0;
-	static int i;
-	static JCLOUD_MSG_PACK serverpckt;
-	serverpckt.msgHead.msgid = JCLOUD_MSG_ID_PUSH_DRONE_CONTENT;
 
 	while (1)
 	{

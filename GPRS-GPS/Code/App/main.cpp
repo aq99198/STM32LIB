@@ -5,7 +5,6 @@
 #include "ubloxTask.h"
 #include "APlinkTask.h"
 
-
 #include "stm32f10x_it.h"
 
 void App_Task0();
@@ -79,14 +78,12 @@ void App_Task0()
 	Ucloud *server = Ucloud::getIntance();
   server->Run();
 	
-
-	
 	while(1)
 	{
-		
 		serialCom();
 	}
 }
+
 
 
 #define BuildList "**BuildTime " __DATE__" " __TIME__ "\r\n"

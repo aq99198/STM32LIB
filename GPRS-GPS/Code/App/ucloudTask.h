@@ -22,6 +22,7 @@ public:
     bool SetDeviceId(char * device,char * str,INT32 maxlen);
     void SendHeartbeat();
     void SendIdentity();  
+		void SendBat(float bat,float pwr);
     static void SendMsgTask(void* param);
     static void RcvMsgTask(void* param);
     void SendLoop(void);

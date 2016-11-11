@@ -281,7 +281,6 @@ void CUbloxGPS::UBXMsgCheckSum(UBX_PACKET &pct, UINT8 &CKA, UINT8 &CKB)
 */
 void  CUbloxGPS::TaskLoop()
 {
-		#define HEARTBEAT_MSG_INTERVAL_MS      10000
     static UBX_PACKET pckt_main;
 		static JCLOUD_MSG_PACK serverpckt;
     UBX_MSG_HEAD *REV_MSG_HEAD;

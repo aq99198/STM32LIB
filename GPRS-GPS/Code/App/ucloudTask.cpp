@@ -3,8 +3,6 @@
 #include "ubloxTask.h"
 #include "ucloudTask.h"
 
-
-static UINT8 RxTaskQuitFlag = 0;
 static const UINT32 ulCrcTable[256] =
 {
    0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L, 0x706af48fL,
@@ -193,6 +191,7 @@ void Ucloud::RcvMsgTask(void* param)
 }
 
 #define HEARTBEAT_MSG_INTERVAL_MS      10000
+#define VOLTAGE_MSG_INTERVAL_MS      	 5000
 #define TIMEOUT_TO_RESEND_MS           15000
 #define SHORT_RECONNECT_INTERVAL_MS    5000
 #define LONG_RECONNECT_INTERVAL_MS     10000
@@ -207,6 +206,8 @@ void Ucloud::RcvMsgTask(void* param)
 void Ucloud::SendLoop()
 {
 	UINT32 timerEnd, timerStart;
+	float bat_voltage,pwr_voltage;
+	bool _semVoltage=true;
 	
 	OSTimeDly(DELAY_MS);
 	SendIdentity();								// 上电发送握手信息
@@ -214,6 +215,8 @@ void Ucloud::SendLoop()
 	while(!m_bConnect)						// 等待回复握手信息
 	{
 		  timerEnd = OSTimeGet();
+		
+		  /* start send inentity */
 			if((timerEnd - timerStart) > (TIMEOUT_TO_RESEND_MS>>1)) 	// 等待超时重新发送握手
 			{
 				SendIdentity();					
@@ -237,17 +240,38 @@ void Ucloud::SendLoop()
 				resetFlag = 1;
 				bConnect = m_bConnect;
 			}	
+			
+			
+			
+			/* timing send bat voltage */
 			OSSemPost(semMutex);
+			if(((timerEnd - timerStart) > VOLTAGE_MSG_INTERVAL_MS) && (bConnect == true)&&_semVoltage) 
+			{	
+				
+				bat_voltage = (float)(get_ChannelVale(0) * 438.9f / 409600.0f);         //比例为： 33K 100K
+				pwr_voltage = (float)(get_ChannelVale(1) * 438.9f / 135168.0f);         //比例为：100K  33K
+				PRINT("BAT:%f  PWR:%f \r\n",bat_voltage,pwr_voltage);
+				_semVoltage=false;
+				
+				EndianSwap32((void *)&bat_voltage);
+				EndianSwap32((void *)&pwr_voltage);
+				
+				SendBat(bat_voltage,pwr_voltage);
+			}
+			OSTimeDly(SEND_POLL_INTERVAL_MS);	
+			
 			
 			
 			/* timing send heartbeat  */
+			OSSemPost(semMutex);
 			if(((timerEnd - timerStart) > HEARTBEAT_MSG_INTERVAL_MS) && (bConnect == true)) 
 			{	
 				SendHeartbeat();   				
 				timerStart = OSTimeGet();
+				_semVoltage=true;
 			}
 			OSTimeDly(SEND_POLL_INTERVAL_MS);	
-
+			
 			
 			/* reconnection  */
 			while( !bConnect ) 
@@ -440,7 +464,6 @@ INT32 Ucloud::RecvMsg(JCLOUD_MSG_PACK & pck)
       }
 		}
   }
-  return -1;
 }
 
 void Ucloud::SendMsgToSIM(JCLOUD_MSG_PACK &pck)
@@ -529,4 +552,22 @@ void Ucloud::SendHeartbeat()
 	DEBUG("SendHeartbeat\r\n");
 	#endif
 }
+
+
+void Ucloud::SendBat(float bat,float pwr)         //发送电池电压
+{
+	static JCLOUD_MSG_PACK pckt;
+	pckt.msgHead.msgid = JCLOUD_MSG_ID_BAT;
+	pckt.msgHead.msglen = sizeof(float) * 2;       //两个float型数据
+	
+	memcpy(&pckt.Data[0], &bat, sizeof(float));      //填充数据
+	memcpy(&pckt.Data[4], &pwr, sizeof(float));
+	
+	OSMutexPend(SemUartW5, 0, &g_u8Rerr);
+	SendMsg(pckt);
+	OSMutexPost(SemUartW5);
+}
+
+
+
 
