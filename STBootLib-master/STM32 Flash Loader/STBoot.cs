@@ -10,21 +10,21 @@ namespace STBootLib
 {
     public class STBoot : IDisposable
     {
-        /* serial port */
+        /* 串口对象 */
         SerialPort sp;
-        /* command mutex */
+        /* 申明一个互斥量 */
         SemaphoreSlim sem;
-        /* list of supported commands */
+        /* 所支持的命名 */
         List<STCmds> Commands;
 
 
-        /* bootloader version */
+        /* bootloader 的版本 */
         public string Version;
-        /* product id */
+        /* 芯片ID */
         public ushort ProductID;
         
 
-        /* constructor */
+        /* 构造函数 */
         public STBoot()
         {
             Commands = new List<STCmds>();
@@ -32,63 +32,73 @@ namespace STBootLib
             sem = new SemaphoreSlim(1);
         }
 
-        /* destructor */
+        /* 析构函数 用于释放串口 */
         ~STBoot()
         {
-            /* dispose of serial port */
             Dispose();
         }
 
-        /* dispose implementation */
         public void Dispose()
         {
-            /* close serial port */
+            /* 关闭串口 */
             Close();
         }
 
-        /* open serial port */
+       /******************************************************************************
+        * 打开串口函数
+        ******************************************************************************/
         public void Open(string portName, uint baudRate)
         {
-            /* initialize serial port */
+            /* 初始化串口 */
             sp = new SerialPort(portName, (int)baudRate, Parity.Even, 8);
-            /* open serial port */
+            /* 打开串口 */
             sp.Open();
 
-            /* discard buffers */
+            /* 清除串行驱动程序接收和发送缓冲区的数据 */
             sp.DiscardInBuffer();
             sp.DiscardOutBuffer();
         }
 
-        /* close */
+        /******************************************************************************
+        * 关闭串口函数
+        ******************************************************************************/
         public void Close()
         {
-            /* close permitted? */
+            /* 判断是允许关闭 */
             if (sp != null && sp.IsOpen)
                 sp.Close();
         }
 
-        /* initialize communication */
+        /******************************************************************************
+        * 初始化 任务
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task Initialize()
         {
-            /* perform autobauding */
+            /* 发送一个7F给STM32，STM32根据这个字符自动设置自身的波特率 */
             await Init();
-            /* get version and command list */
+            /* 发送GET（00 FF）命令给STM32，获得STM32内部bootloader的版本和所支持的命令 */
             await Get();
 
-            /* no support for get id? */
+            /* 判断是否支持GET_ID命令 */
             if (!Commands.Contains(STCmds.GET_ID)) {
-                /* throw an exception */
+                /* 如果不支持则抛出异常 */
                 throw new STBootException("Command not supported");
             }
 
-            /* get product id */
+            /* 发送GET_ID 指令获得芯片ID信息 */
             await GetID();
         }
 
-        /* unprotect memory */
+        /******************************************************************************
+        * 解锁 内部的Flash
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task Unprotect()
         {
-            /* no support for unprotect? */
+            /* 判断是否支持解锁Flash指令 */
             if (!Commands.Contains(STCmds.WR_UNPROTECT))
                 throw new STBootException("Command not supported");
 
@@ -100,779 +110,850 @@ namespace STBootLib
             await WriteUnprotect();
         }
 
-        /* read memory */
+        /******************************************************************************
+        * 读芯片的Flash
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task ReadMemory(uint address, byte[] buf, int offset, 
             int size, IProgress<int> p, CancellationToken ct)
         {
-            /* number of bytes read */
+            
             int bread = 0;
-            /* no support for read? */
+            /* 判断是否支持读Flash指令 */
             if (!Commands.Contains(STCmds.READ))
                 throw new STBootException("Command not supported");
 
-            /* data is read in chunks */
+            /* 判断设置的块的大小是否合理 */
             while (size > 0 && !ct.IsCancellationRequested) {
-                /* chunk size */
+              
                 int csize = Math.Min(size, 256);
-                /* read a single chunk */
+                /* 读某一块 */
                 await Read(address, buf, offset, csize);
          
-                /* update iterators */
+                /* 更新偏移量 */
                 size -= csize; offset += csize; address += (uint)csize; 
-                /* update number of bytes read */
+               
                 bread += csize;
 
-                /* report progress */
+                /* 报告进展 */
                 if (p != null)
                     p.Report(bread);
             }
 
-            /* throw exception if operation was cancelled */
+            /* 当读被取消了，抛出异常 */
             if (ct.IsCancellationRequested)
                 throw new OperationCanceledException("Read cancelled");
         }
 
-        /* write memory */
+        /******************************************************************************
+       * 写芯片的Flash
+       * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+       * 
+       ******************************************************************************/
         public async Task WriteMemory(uint address, byte[] buf, int offset,
             int size, IProgress<STBootProgress> p, CancellationToken ct)
         {
-            /* number of bytes written */
+           
             int bwritten = 0, btotal = size;
 
-            /* no support for read? */
+            /* 判断是否支持写指令 */
             if (!Commands.Contains(STCmds.WRITE))
                 throw new STBootException("Command not supported");
 
-            /* data is read in chunks */
+            /* 当块中有数据 */
             while (size > 0 && !ct.IsCancellationRequested) {
-                /* chunk size */
+               
                 int csize = Math.Min(size, 256);
-                /* read a single chunk */
+                /* 写一个块 */
                 await Write(address, buf, offset, csize);
 
-                /* update iterators */
+                /* 更新状态 */
                 size -= csize; offset += csize; address += (uint)csize;
-                /* update number of bytes read */
+                
                 bwritten += csize;
 
-                /* report progress */
+                /* 报告进展 */
                 if (p != null)
                     p.Report(new STBootProgress(bwritten, btotal));
             }
 
-            /* throw exception if operation was cancelled */
+            
             if (ct.IsCancellationRequested)
                 throw new OperationCanceledException("Write cancelled");
         }
 
-        /* erase page */
+        /******************************************************************************
+        * 擦除芯片的Flash
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task ErasePage(uint pageNumber)
         {
-            /* 'classic' erase operation supported? */
+            /* 判断是否支持擦除命令 */
             if (Commands.Contains(STCmds.ERASE)) {
                 await Erase(pageNumber);
-            /* 'extended' erase operation supported? */
+             /* 判断是否支持擦除命令 */
             } else if (Commands.Contains(STCmds.EXT_ERASE)) {
                 await ExtendedErase(pageNumber);
-            /* no operation supported */
+            /* 如果不支持，则抛出一个异常 */
             } else {
                 throw new STBootException("Command not supported");
             }
         }
 
-        /* perform global erase */
+        /******************************************************************************
+        * 擦除全部
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task GlobalErase()
         {
-            /* 'classic' erase operation supported? */
+            
             if (Commands.Contains(STCmds.ERASE)) {
                 await EraseSpecial(STEraseMode.GLOBAL);
-                /* 'extended' erase operation supported? */
+               
             } else if (Commands.Contains(STCmds.EXT_ERASE)) {
                 await ExtendedEraseSpecial(STExtendedEraseMode.GLOBAL);
-                /* no operation supported */
+                
             } else {
                 throw new STBootException("Command not supported");
             }
         }
 
-        /* jump to user code */
+        /******************************************************************************
+        * 跳转到制定地址
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         public async Task Jump(uint address)
         {
-            /* no support for go? */
+            /* 判断是否支持GO 指令*/
             if (!Commands.Contains(STCmds.GO))
                 throw new STBootException("Command not supported");
 
-            /* go! */
+            /* 去吧!!! */
             await Go(address);
         }
 
-        /* init */
+       /******************************************************************************
+       * 初始化
+       * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+       * 
+       ******************************************************************************/
         private async Task Init()
         {
-            /* command word */
+            /* 发送 */
             var tx = new byte[1];
-            /* response code */
+            /* 回复 */
             var ack = new byte[1];
 
-            /* store code */
             tx[0] = (byte)STCmds.INIT;
 
-            /* wait for command sender to finish its job with previous 
-             * command */
+            /* 等待指令发送线程，将数据发送完毕 */
             await sem.WaitAsync();
 
-            /* try to send command and wait for response */
+            /* 发送一条指令，并等待应答 */
             try {
-                /* send bytes */
+                /* 发送命令 */
                 await SerialWrite(tx, 0, tx.Length);
 
-                /* wait for response code */
+                /* 等待数据读取 */
                 await SerialRead(ack, 0, 1);
-               /* check response code */
+                /* 判断回复的命令 */
                 if (ack[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
-            /* error during send */
+            /* 当发送异常 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                
                 throw;
             }
 
-            /* release semaphore */
+            /* 正常释放信号量 */
             sem.Release();
         }
 
-        /* get command */
+        /******************************************************************************
+        * get 指令
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         private async Task Get()
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[2];
-            /* temporary storage for response bytes */
+            /* 接收缓存数组 */
             var tmp = new byte[1];
-            /* numbe or response bytes */
+            /* 回复字节的个数 */
             int nbytes;
-            /* rx buffer */
+            /* 接收的数组 */
             byte[] rx;
            
-            /* store code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.GET;
-            /* set checksum */
+            /* 做异或校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* wait for command sender to finish its job with previous 
+            /* 等待发送线程将上一个命令发送完成
              * command */
             await sem.WaitAsync();
 
-            /* try to send command and wait for response */
+            /* 发送一个指令，并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, tx.Length);
 
-                /* wait for response code */
+                /* 接受一个1字符 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断应答信息第一个值是否为ACK 79 */
                 if (tmp[0] != (byte)STResps.ACK) 
                     throw new STBootException("Command Rejected");
 
-                /* wait for number of bytes */
+                /* 接受第二个字符 */
                 await SerialRead(tmp, 0, 1);
-                /* assign number of bytes that will follow (add for acks) */
+                /*  */
                 nbytes = tmp[0] + 2;
-                /* nbytes must be equal to 13 for stm32 products */
+                /* 在STM32中 nbytes 必定为13（协议规定） */
                 if (nbytes != 13)
                     throw new STBootException("Invalid length");
 
-                /* prepare buffer */
+                /* 创建一个新的接受数组 */
                 rx = new byte[nbytes];
-                /* receive response */
+                /* 接受剩余的字符 */
                 await SerialRead(rx, 0, rx.Length);
-            /* oops, something baaad happened! */
+            /* 啊噢，出异常了 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                
                 throw;
             }
 
-            /* store version information */
+            /* 获得bootloader的版本 */
             Version = (rx[0] >> 4).ToString() + "." + 
                 (rx[0] & 0xf).ToString();
 
-            /* initialize command list */
+            /* 初始化命令表，用于以后判断 */
             Commands = new List<STCmds>();
-            /* add all commands */
+            /* 添加所有的指令 */
             for (int i = 1; i < nbytes - 1; i++)
                 Commands.Add((STCmds)rx[i]);
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* get id command */
+        /******************************************************************************
+        * get_id 指令
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         private async Task GetID()
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[2];
-            /* temporary storage for response bytes */
+            /* 接收缓存数组 */
             var tmp = new byte[1];
-            /* numbe or response bytes */
+            /* 回复字节的个数 */
             int nbytes;
-            /* rx buffer */
+            /* 接受数组 */
             byte[] rx;
 
-            /* store code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.GET_ID;
-            /* set checksum */
+            /* XOR 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* try to send command and wait for response */
+            /* 发送命令，并等待应答 */
             try {
-                /* send bytes */
+                /* 发送命令 */
                 await SerialWrite(tx, 0, tx.Length);
 
-                /* wait for response code */
+                /* 等待应答信号 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 检查ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* wait for number of bytes */
+                /* 等待长度字节 */
                 await SerialRead(tmp, 0, 1);
-                /* assign number of bytes that will follow (add for acks) */
+                /* 计算数据长度*/
                 nbytes = tmp[0] + 2;
-                /* nbytes must be equal to 3 for stm32 products */
+                /* nbytes 必定等于3 (协议规定) */
                 if (nbytes != 3)
                     throw new STBootException("Invalid length");
 
-                /* prepare buffer */
+                /* 初始化一个新的接受数组*/
                 rx = new byte[nbytes];
-                /* receive response */
+                /* 等待接受字符 */
                 await SerialRead(rx, 0, rx.Length);
-            /* oops, something baaad happened! */
+            /* 出错了 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
                 /* re-throw */
                 throw;
             }
 
-            /* store product id */
+            /* 获得产品的ID */
             ProductID = (ushort)(rx[0] << 8 | rx[1]);
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* read command */
+        /******************************************************************************
+        * 读 指令
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         private async Task Read(uint address, byte[] buf, int offset, int length)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[9];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.READ;
-            /* checksum */
+            /* xor校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* store address */
+            /* 地址移位 */
             tx[2] = (byte)((address >> 24) & 0xff);
             tx[3] = (byte)((address >> 16) & 0xff);
             tx[4] = (byte)((address >> 8) & 0xff);
             tx[5] = (byte)(address & 0xff);
-            /* address checksum (needs to be not negated. why? because ST! 
-             * that's why. */
+            /* 为什么要地址校验？因为这是ST! */
             tx[6] = (byte)~ComputeChecksum(tx, 2, 4);
 
-            /* store number of bytes */
+            /* 长度字节 */
             tx[7] = (byte)(length - 1);
-            /* size checksum */
+            /* 校验 */
             tx[8] = ComputeChecksum(tx, 7, 1);
 
-            /* try to send command and wait for response */
+            /* 发送一个指令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送*/
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否应答了ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送地址 */
                 await SerialWrite(tx, 2, 5);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否应答了ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Address Rejected");
 
-                /* send address */
+                /* 发送长度和校验 */
                 await SerialWrite(tx, 7, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否应答了ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Size Rejected");
 
-                /* receive response */
+                /* 接受数组 */
                 await SerialRead(buf, offset, length);
-                /* oops, something baaad happened! */
+                /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+               
                 throw;
             }
 
-            /* release semaphore */
+            /* 是否信号量 */
             sem.Release();
         }
 
-        /* go command */
+        /******************************************************************************
+        * GO 指令
+        * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+        * 
+        ******************************************************************************/
         private async Task Go(uint address)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[7];
-            /* temporary storage for response bytes */
+            /* 等待回应 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.GO;
-            /* checksum */
+            /* 校验*/
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* store address */
+            /* 地址拆分 */
             tx[2] = (byte)((address >> 24) & 0xff);
             tx[3] = (byte)((address >> 16) & 0xff);
             tx[4] = (byte)((address >> 8) & 0xff);
             tx[5] = (byte)(address & 0xff);
-            /* address checksum (needs to be not negated. why? because ST! 
-             * that's why. */
+            /* 地址校验 */
             tx[6] = (byte)~ComputeChecksum(tx, 2, 4);
 
-            /* try to send command and wait for response */
+            /* 发送命令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否应答了ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送地址 */
                 await SerialWrite(tx, 2, 5);
-                /* wait for response code */
+                /* 等待应答码 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 等待应答 */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Address Rejected");
-                /* oops, something baaad happened! */
+                /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                /*  */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* write memory */
+        /******************************************************************************
+         * Write 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task Write(uint address, byte[] data, int offset, int length)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[9];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.WRITE;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* store address */
+            /* 地址拆分 */
             tx[2] = (byte)((address >> 24) & 0xff);
             tx[3] = (byte)((address >> 16) & 0xff);
             tx[4] = (byte)((address >> 8) & 0xff);
             tx[5] = (byte)(address & 0xff);
-            /* address checksum (needs to be not negated. why? because ST! 
-             * that's why. */
+            /* 校验 */
             tx[6] = (byte)~ComputeChecksum(tx, 2, 4);
 
-            /* number of bytes */
+            /* 长度字节 */
             tx[7] = (byte)(length - 1);
-            /* data checksum */
+            /* 校验 */
             tx[8] = (byte)(~(ComputeChecksum(data, offset, length) ^ tx[7]));
 
-            /* try to send command and wait for response */
+            /* 发送指令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送地址 */
                 await SerialWrite(tx, 2, 5);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Address Rejected");
 
-                /* send the number of bytes */
+                /* 发用长度字节 */
                 await SerialWrite(tx, 7, 1);
-                /* send data */
+                /* 发送数据 */
                 await SerialWrite(data, offset, length);
-                /* send checksum */
+                /* 写校验 */
                 await SerialWrite(tx, 8, 1);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Data Rejected");
 
-                /* oops, something baaad happened! */
+                /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                /*  */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* erase memory page */
+        /******************************************************************************
+         * 擦除 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task Erase(uint pageNumber)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[5];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.ERASE;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* erase single page */
+            /* 擦除单页 */
             tx[2] = 0;
-            /* set page number */
+            /* 设置页序 */
             tx[3] = (byte)pageNumber;
-            /* checksum */
+            /* 校验 */
             tx[4] = (byte)~ComputeChecksum(tx, 2, 2);
 
-            /* try to send command and wait for response */
+            /* 发送并等待应答 */
             try {
-                /* send bytes */
+                /* 发送命令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送地址 */
                 await SerialWrite(tx, 2, 3);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Page Rejected");
 
-                /* oops, something baaad happened! */
+                /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 是否信号量 */
                 sem.Release();
-                /* re-throw */
+                /*  */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* erase memory page */
+        /******************************************************************************
+         * 特定擦除 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task EraseSpecial(STEraseMode mode)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[4];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.ERASE;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* erase single page */
+            /* 擦除单页 */
             tx[2] = (byte)((int)mode);
-            /* checksum */
+            /* 校验 */
             tx[3] = (byte)~ComputeChecksum(tx, 2, 2);
 
-            /* try to send command and wait for response */
+            /* 发送指令并等待回复 */
             try {
-                /* send bytes */
+                /* 发送命令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送地址 */
                 await SerialWrite(tx, 2, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Special Code Rejected");
 
-                /* oops, something baaad happened! */
+                /* 发生错误 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
                 /* re-throw */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* extended erase memory page */
+        /******************************************************************************
+         * 擦除制定页 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task ExtendedErase(uint pageNumber)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[7];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.EXT_ERASE;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* erase single page */
+            /* 檫除单页 */
             tx[2] = 0;
             tx[3] = 0;
-            /* set page number */
+            /* 设置页序 */
             tx[4] = (byte)(pageNumber >> 8);
             tx[5] = (byte)(pageNumber >> 0);
-            /* checksum */
+            /* 校验 */
             tx[6] = (byte)~ComputeChecksum(tx, 2, 5);
 
-            /* try to send command and wait for response */
+            /* 发送指令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送页序 */
                 await SerialWrite(tx, 2, 5);
-                /* wait for response code. use longer timeout, erase might
-                 * take a while or two. */
+                /* 等待应答，擦除比较耗时，将超时时间设为3000ms */
                 await SerialRead(tmp, 0, 1, 3000);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK) 
                     throw new STBootException("Page Rejected");
 
-            /* oops, something baaad happened! */
+            /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                /*  */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* extended erase memory page */
+        /******************************************************************************
+         * 擦除制定页特殊模式 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task ExtendedEraseSpecial(STExtendedEraseMode mode)
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[5];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.EXT_ERASE;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* erase single page */
+            /* 拆分 */
             tx[2] = (byte)((int)mode >> 8);
             tx[3] = (byte)((int)mode >> 0);
-            /* checksum */
+            /* 校验 */
             tx[4] = (byte)~ComputeChecksum(tx, 2, 3);
 
-            /* try to send command and wait for response */
+            /* 发送命令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* send address */
+                /* 发送模式字节 */
                 await SerialWrite(tx, 2, 3);
-                /* wait for response code. use longer timeout, erase might
-                 * take a while or two. */
+                /* 等待，设置超时时间为1000ms */
                 await SerialRead(tmp, 0, 1, 10000);
-                /* check response code */
+                /* 是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Special code Rejected");
 
-                /* oops, something baaad happened! */
+                /* 出错 */
             } catch (Exception) {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
-                /* re-throw */
+                /*  */
                 throw;
             }
 
-            /* release semaphore */
+            /* 释放信号量 */
             sem.Release();
         }
 
-        /* unprotect flash before writing */
+        /******************************************************************************
+         * 写FLASH保护 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task WriteUnprotect()
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[2];
-            /* temporary storage for response bytes */
+            /* 接收缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.WR_UNPROTECT;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* try to send command and wait for response */
+            /* 发送并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 应答是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* wait for response code. use longer timeout, erase might
-                 * take a while or two. */
+                /* 等待应答 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断应答是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Write Unprotect Rejected");
 
-                /* oops, something baaad happened! */
+                /* 出错 */
             } finally {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
             }
         }
 
-        /* unprotect flash before reading */
+        /******************************************************************************
+         * 解锁FLASH 指令
+         * async 是.NET 4.5之后才用的关键字，用于方便地处理异步操作
+         * 
+         ******************************************************************************/
         private async Task ReadUnprotect()
         {
-            /* command word */
+            /* 发送数组 */
             var tx = new byte[2];
-            /* temporary storage for response bytes */
+            /* 发送缓冲数组 */
             var tmp = new byte[1];
 
-            /* command code */
+            /* 赋值 */
             tx[0] = (byte)STCmds.RD_UNPROTECT;
-            /* checksum */
+            /* 校验 */
             tx[1] = ComputeChecksum(tx, 0, 1);
 
-            /* try to send command and wait for response */
+            /* 发送指令并等待应答 */
             try {
-                /* send bytes */
+                /* 发送指令 */
                 await SerialWrite(tx, 0, 2);
-                /* wait for response code */
+                /* 等待应答码 */
                 await SerialRead(tmp, 0, 1);
-                /* check response code */
+                /* 判断是否为ACK */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Command Rejected");
 
-                /* wait for response code. use longer timeout, erase might
-                 * take a while or two. */
+                /* 等待应答，设置超时时间为10000ms */
                 await SerialRead(tmp, 0, 10000);
-                /* check response code */
+                /* 等待应答 */
                 if (tmp[0] != (byte)STResps.ACK)
                     throw new STBootException("Write Unprotect Rejected");
 
-                /* oops, something baaad happened! */
+                /* 出错 */
             } finally {
-                /* release semaphore */
+                /* 释放信号量 */
                 sem.Release();
             }
         }
 
-        /* compute checksum */
+        /******************************************************************************
+         * 计算校验
+         * 使用了XOR 异或校验
+         ******************************************************************************/
         private byte ComputeChecksum(byte[] data, int offset, int count)
         {
-            /* initial value */
+            /* 初始化 */
             byte xor = 0xff;
-            /* compute */
+            /* 计算 */
             for (int i = offset; i < count + offset; i++)
                 xor ^= data[i];
 
-            /* return value */
+            /* 返回结果 */
             return xor;
         }
 
-        /* write to serial port */
+        /******************************************************************************
+         * 串口写数据
+         * 
+         ******************************************************************************/
         private async Task SerialWrite(byte[] data, int offset, int count)
         {
-            /* shorter name */
+            /* 流 */
             var bs = sp.BaseStream;
 
-            /* write operation */
+            /* 写操作 */
             await bs.WriteAsync(data, offset, count);
         }
 
-        /* standard read with timeout equal to 1s */
+       /******************************************************************************
+        * 标准串口读数据
+        * 默认设置1s超时时间
+        ******************************************************************************/
         private async Task SerialRead(byte[] data, int offset, int count)
         {
             await SerialRead(data, offset, count, 1000);
         }
 
-        /* read 'length' number of bytes from serial port */
+       /******************************************************************************
+       * 读制定长度的值
+       * 
+       ******************************************************************************/
         private async Task SerialRead(byte[] data, int offset, int count, int timeout)
         {
-            /* shorter name */
+            /* 流 */
             var bs = sp.BaseStream;
-            /* number of bytes read */
+            /* 读到数据的长度 */
             int br = 0;
 
-            /* read until all bytes are fetched from serial port */
+            /* 从串口读取,直到所有字节都被取完 */
             while (br < count) {
-                /* this try is for timeout handling */
+                /* 这里使用try 是为了超时处理 */
                 try {
-                    /* prepare task */
+                    /* 读数据 */
                     br += await bs.ReadAsync(data, offset + br, count - br).
                         WithTimeout(timeout);
-                /* got handling? */
+                /* 是否超时 */
                 } catch (OperationCanceledException) {
-                    /* rethrow */
+                    /* 抛出超时异常 */
                     throw new STBootException("Timeout");
                 }
             }

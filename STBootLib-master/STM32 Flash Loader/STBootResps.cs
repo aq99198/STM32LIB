@@ -9,9 +9,9 @@ namespace STBootLib
     /* response codes*/
     public enum STResps
     {
-        /* command accepted */
+        /* 命令正常 应答 */
         ACK = 0x79,
-        /* command discarded */
+        /* 命令异常 应答 */
         NACK = 0x1F,
     }
 }

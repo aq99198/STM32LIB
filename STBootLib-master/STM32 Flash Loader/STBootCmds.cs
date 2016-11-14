@@ -9,56 +9,49 @@ namespace STBootLib
     /* command list */
     public enum STCmds
     {
-        /* this is used by bootloader to determine the baudrate */
-        INIT = 0x7F,
-        /* Gets the version and the allowed commands supported 
-         * by the current version of the bootloader */
-        GET = 0x00,
-        /* Gets the bootloader version and the Read Protection 
-         * status of the Flash memory */
-        GET_PROT = 0x01,
-        /* Gets the chip ID */
-        GET_ID = 0x02,
-        /* Reads up to 256 bytes of memory starting from an 
-         * address specified by the application */
-        READ = 0x11,
-        /* Jumps to user application code located in the internal 
-         * Flash memory or in SRAM */
-        GO = 0x21,
-        /* Writes up to 256 bytes to the RAM or Flash memory starting 
-         * from an address specified by the application */
-        WRITE = 0x31,
-        /* Erases from one to all the Flash memory pages */
-        ERASE = 0x43,
-        /* Erases from one to all the Flash memory pages using 
-         * two byte addressing mode (available only for v3.0 usart 
-         * bootloader versions and above). */
-        EXT_ERASE = 0x44,
-        /* Enables the write protection for some sectors */
-        WR_PROTECT = 0x63,
-        /* Disables the write protection for all Flash memory sectors */
-        WR_UNPROTECT = 0x73,
-        /* Enables the read protection */
-        RD_PROTECT = 0x82,
-        /* Disables the read protection */
-        RD_UNPROTECT = 0x92
+        
+        INIT = 0x7F,        //用于让STM32 的bootloader自适应上位机的波特率 
+
+        GET = 0x00,         //获取当前自举程序版本以及支持的指令
+
+        GET_PROT = 0x01,    //读取自举程序版本及Flash的读保护状态
+    
+        GET_ID = 0x02,      //获得芯片ID
+   
+        READ = 0x11,        //从应用程序制定的地址开始读取最多256个字节的存储空间
+
+        GO = 0x21,          //跳转到内部FLASH或SRAM代码
+     
+        WRITE = 0x31,       //从用用程序指定的地址开始讲最多256个字节数据写入RAM或FLASH
+        
+        ERASE = 0x43,       //擦除一个到全部Flash页面
+      
+        EXT_ERASE = 0x44,   //使用双字节寻址模式擦除一个到全部Flash页面（仅用于V3.0 usart 自举程序版本及以上版本）
+
+        WR_PROTECT = 0x63,  //使能某些扇区的写保护
+    
+        WR_UNPROTECT = 0x73,//禁止所有Flash扇区的写保护
+
+        RD_PROTECT = 0x82,  //使能读保护
+
+        RD_UNPROTECT = 0x92 //禁止读保护
     }
 
-    /* special erase mode for normal erase command */
+    /* 特殊的擦除模式 */
     public enum STEraseMode
     {
-        /* erase all sectors */
+        /* 檫除所有 */
         GLOBAL = 0xff,
     }
 
-    /* special erase mode for normal erase command */
+    /* 特殊的擦除模式 */
     public enum STExtendedEraseMode
     {
-        /* erase all sectors */
+        /* 擦除所有*/
         GLOBAL = 0xffff,
-        /* erase bank 1 */
+        /* 擦除 bank 1 */
         BANK1 = 0xfffe,
-        /* erase bank 2 */
+        /* 擦除 bank 2 */
         BANK2 = 0xfffd
     }
 }

@@ -8,16 +8,16 @@ namespace STBootLib
 {
     public class STBootProgress
     {
-        /* total number of bytes */
+        /* 总共的bytes */
         public readonly int bytesTotal;
-        /* number of bytes processed */
+        /*  已处理的bytes */
         public readonly int bytesProcessed;
 
         public STBootProgress(int bytesProcessed, int bytesTotal)
         {
-            /* set the number of bytes processed */
+            /* set  */
             this.bytesProcessed = bytesProcessed;
-            /* set the total number of bytes */
+            /* set  */
             this.bytesTotal = bytesTotal;
         }
     }
