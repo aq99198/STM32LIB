@@ -11,6 +11,8 @@ void bsp_init(){
 	
 	led_gpio_init();
 	
+	BEEP_gpio_init();
+	
 	WakeupPin_Config();
 	
 	GPRS_POWER_INIT();
@@ -28,6 +30,9 @@ void bsp_init(){
 	TIM5_init();
 	
 	ExitSleepMode_SIM900A();
+	
+	/* read all onchip value init global value */
+	read_onchip_globalVal();
 }
 
 
@@ -100,6 +105,19 @@ void led_gpio_init(){
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 		GPIO_Init(LED0_GPIO, &GPIO_InitStructure);
+}
+
+
+void BEEP_gpio_init(){
+		GPIO_InitTypeDef GPIO_InitStructure;
+		GPIO_StructInit(&GPIO_InitStructure);
+	
+		/* BEEP */	
+		GPIO_InitStructure.GPIO_Pin = BEEP_PIN;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_Init(BEEP_GPIO, &GPIO_InitStructure);
+		GPIO_SetBits(BEEP_GPIO,BEEP_PIN);	// close beep
 }
 
 

@@ -99,9 +99,6 @@ void USART1_Init(void)
 
 	USART_Cmd(USART1, ENABLE);
 
-
-	DMA_Cmd(DMA1_Channel4, ENABLE);
-
 	DMA_DeInit(DMA1_Channel4);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (unsigned int)&USART1->DR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = 0;
@@ -117,15 +114,20 @@ void USART1_Init(void)
 
 	DMA_Init(DMA1_Channel4, &DMA_InitStructure);      
 
-	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
-
-	DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
-	
 	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
  	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
  	NVIC_Init(&NVIC_InitStructure);
+	
+	DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
+	
+	DMA_Cmd(DMA1_Channel4, ENABLE);
+	
+	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+	
+	
+	
 }
 
 void USART2_SetBaudRate(int bd){
@@ -296,6 +298,39 @@ void UART5_Init(void)
 
 void USART1_DMA(unsigned char *data , int len)
 {
+//	NVIC_InitTypeDef NVIC_InitStructure;
+//  DMA_InitTypeDef  DMA_InitStructure;
+//	
+//	DMA_Cmd(DMA1_Channel4, DISABLE);
+
+//	DMA_DeInit(DMA1_Channel4);
+//	DMA_InitStructure.DMA_PeripheralBaseAddr = (unsigned int)&USART1->DR;
+//	DMA_InitStructure.DMA_MemoryBaseAddr = (UINT32)data;
+//	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+//	DMA_InitStructure.DMA_BufferSize = len;
+//	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+//	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+//	DMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;//DMA_PeripheralDataSize_HalfWord;
+//	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;//DMA_MemoryDataSize_HalfWord;
+//	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;//DMA_Mode_Circular;
+//	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+//	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;	
+
+//	DMA_Init(DMA1_Channel4, &DMA_InitStructure);      
+
+//	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
+// 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+// 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+// 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+// 	NVIC_Init(&NVIC_InitStructure);
+//	
+//	DMA_Cmd(DMA1_Channel4, ENABLE);
+//	
+//	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+//	
+//	DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
+	
+	
 	DMA_Cmd(DMA1_Channel4, DISABLE);
 	DMA1_Channel4->CCR &= ~0x00000001;
 	DMA1_Channel4->CMAR = (UINT32)data;
@@ -320,12 +355,12 @@ void USART2_DMA(unsigned char * data , int len)
 void DMA1_Channel4_IRQHandler(void)
 {
    if( DMA_GetITStatus(DMA1_IT_TC4) == SET )
-	{
-		DMA_ClearITPendingBit(DMA1_IT_TC4);
-	    if(SemUartW1 != OS_EVENT_NULL)
+	 {
+		if(SemUartW1 != OS_EVENT_NULL)
 		{
 			OSSemPost(SemUartW1);
 		}
+		DMA_ClearITPendingBit(DMA1_IT_TC4);
 	}
 }
 

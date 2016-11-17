@@ -519,6 +519,16 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Code\Driver\drivers\system.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Code\Driver\drivers\system.h</FilePath>
+            </File>
+            <File>
               <FileName>regtarge.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Code\Driver\drivers\regtarge.c</FilePath>
@@ -574,14 +584,14 @@
               <FilePath>..\..\Code\Driver\drivers\sim900a.h</FilePath>
             </File>
             <File>
-              <FileName>system.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Code\Driver\drivers\system.c</FilePath>
+              <FileName>adc.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Code\Driver\drivers\adc.cpp</FilePath>
             </File>
             <File>
-              <FileName>system.h</FileName>
+              <FileName>adc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Code\Driver\drivers\system.h</FilePath>
+              <FilePath>..\..\Code\Driver\drivers\adc.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -22,6 +22,8 @@
 
 
 #include "uartdriver.h"
+#include "ProtocolDef.h"
+#define GPS_MSG_INTERVAL_MS      	 2000
 
 class CUbloxGPS
 {
@@ -32,10 +34,12 @@ public:
     void     RxGpsDebugMode();
 
 public:
+		CUartDriver       *_fcLink;
     int     RecvGPSMsg(UBX_PACKET &Upckt);
     void    SendGpgMsg(UBX_PACKET &UbxPackt);
     UBX_PACKET   *GetGPSRead();
     void    UBXMsgCheckSum(UBX_PACKET &pct, UINT8 &CKA, UINT8 &CKB);
+		void 		SendGPSAutoPilot(COMMPACKET_t pkt,UINT8 *src,UINT16 len);
 private:
     CUbloxGPS(void);
     ~CUbloxGPS(void);
@@ -50,7 +54,7 @@ private:
 private:
     static  CUbloxGPS    *Instance;
     CUartDriver    *gpsSerial;
-		CUartDriver       *_fcLink;
+		
 };/* end of class */
 
 #endif /* end of __UBLOX_GPS_H__ */

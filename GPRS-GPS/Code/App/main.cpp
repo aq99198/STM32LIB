@@ -10,22 +10,10 @@
 void App_Task0();
 void  Facade(void);
 
-void close_gpio(){
-			GPIO_InitTypeDef GPIO_InitStructure;
-			GPIO_StructInit(&GPIO_InitStructure);
-		
-			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			GPIO_Init(GPIOC, &GPIO_InitStructure);
-			GPIO_Init(GPIOD, &GPIO_InitStructure);
-			GPIO_Init(GPIOE, &GPIO_InitStructure);
-}
 
 int main(void)
 {	
+
 			__disable_irq();
 	
 			GPRS_Wakeup();
@@ -65,8 +53,8 @@ void App_Task0()
 	
 	Facade();
 //	
-//	DebugTask *debugTask = DebugTask::GetInstance();
-//  debugTask->Run();
+	//DebugTask *debugTask = DebugTask::GetInstance();
+  //debugTask->Run();
 //	
 	CUbloxGPS * gps = CUbloxGPS::GetInstance();
   gps->Run();
@@ -80,7 +68,10 @@ void App_Task0()
 	
 	while(1)
 	{
-		serialCom();
+		
+		//BEEP_TOGGLE;
+		OSTimeDly(1000);
+		//serialCom();
 	}
 }
 

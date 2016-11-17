@@ -106,6 +106,8 @@ Ucloud::Ucloud()
 	m_uLatestTime_ms = 0;
 	SemGprsLinkConnected = OSSemCreate(0);
 	semMutex = OSSemCreate(1);
+	_dataLink = new CUartDriver(USART1_IDX);
+	
 }
 
 Ucloud::~Ucloud()
@@ -247,7 +249,9 @@ void Ucloud::SendLoop()
 				
 				bat_voltage = (float)(get_ChannelVale(0) * 438.9f / 409600.0f);         //±»¿˝Œ™£∫ 33K 100K
 				pwr_voltage = (float)(get_ChannelVale(1) * 438.9f / 135168.0f);         //±»¿˝Œ™£∫100K  33K
+				#ifdef UCLOUD_DEBUG_ON
 				PRINT("BAT:%f  PWR:%f \r\n",bat_voltage,pwr_voltage);
+				#endif
 				_semVoltage=false;
 				
 				EndianSwap32((void *)&bat_voltage);
@@ -323,6 +327,40 @@ void Ucloud::RcvLoop()
 		
 		switch(ServerPackt.msgHead.msgid)
 		{
+			
+			case JCLOUD_MSG_ID_SETTING_REQ:
+			{
+				UINT8 _setting = ServerPackt.Data[0];
+				bool back_sw = _setting&0x01;                //∑µ∫Ω÷∏¡Ó
+				bool parachute_sw = _setting>>1&0x01;        //ø™…°÷∏¡Ó
+				bool buzzer_sw = _setting>>2&0x01;           //∑‰√˘∆˜÷∏¡Ó
+				bool buckUpGps_sw = _setting>>3&0x01;           //∑‰√˘∆˜÷∏¡Ó
+				
+				if(buzzer_sw) {BEEP_ON;}   //∑‰√˘∆˜≈–∂œ
+				else {BEEP_OFF;}
+				
+				if(parachute_sw){}
+				else {}
+					
+				if(back_sw){}
+				else{}
+				
+				if(buckUpGps_sw!=JCLOUD_BUGPS){
+					JCLOUD_BUGPS = buckUpGps_sw;
+					write_onchip_globalVal();}
+					
+				break;
+			}
+			
+			
+			case JCLOUD_MSG_ID_DATA_LINK:
+			{
+				/* fix probleam   1, length  2, new com port  */
+				_dataLink->write(&ServerPackt.Data[0],ServerPackt.msgHead.msglen);
+				break;
+			}
+			
+			
 			case JCLOUD_MSG_ID_PULL_IDENTITY_RESP: // Œ’ ÷ªÿ∏¥
 			{
 				JCLOUD_IDENTITY_MSG_RESP * IDresp = ( JCLOUD_IDENTITY_MSG_RESP *)ServerPackt.Data;
@@ -533,7 +571,9 @@ void Ucloud::SendIdentity()
 	OSMutexPend(SemUartW5, 0, &g_u8Rerr);
 	SendMsgToSIM(pckt);
 	OSMutexPost(SemUartW5);
+	#ifdef UCLOUD_DEBUG_ON
 	DEBUG("SendIdentity\r\n");
+	#endif
 }
 
 void Ucloud::SendHeartbeat()

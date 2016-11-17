@@ -28,7 +28,8 @@ extern  INT8U								 g_waitTime;
 extern  INT32U JCLOUD_APID;
 extern  INT32U JCLOUD_GSMID;
 extern  INT32U JCLOUD_IP;
-extern  INT16U JCLOUD_PORT;
+extern  INT32U JCLOUD_PORT;
+extern  INT32U JCLOUD_BUGPS;
 
 // connection
 extern bool m_bConnect;
@@ -49,10 +50,10 @@ extern volatile INT8U  SystemStatus;
 
 
 /************************  debug control  ***************************/
-
+//#define DEBUG_INFO  /* all debug output switch */
 //#define DEBUG_ON    /* watch the stack */
-#define SIM900A_DEBUG_ON
-#define UCLOUD_DEBUG_ON
+//#define SIM900A_DEBUG_ON
+//#define UCLOUD_DEBUG_ON
 //#define GPS_DEBUG_ON
 
 
@@ -61,7 +62,7 @@ extern volatile INT8U  SystemStatus;
 
 #define APP_TASK_APLINKRX_STK_SIZE   256
 #define APP_TASK_START_STK_SIZE      256
-#define APP_TASK_UBLOX_STK_SIZE      256
+#define APP_TASK_UBLOX_STK_SIZE      512			//max can use stack size 2048bit
 #define APP_TASK_SERVER_TX_STK_SIZE  256
 #define APP_TASK_SERVER_RX_STK_SIZE  256
 #define APP_TASK_RECORD_COM_STK_SIZE 256

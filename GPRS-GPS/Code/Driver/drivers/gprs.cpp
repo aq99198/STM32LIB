@@ -39,7 +39,9 @@ INT32 GPRS::init( INT32 baudRate, INT8 RstFlag)
     }else
 		{
 				SystemStatus = SYS_SIM900A_ON;
+				#ifdef SIM900A_DEBUG_ON		
 				ERROR("power								[OK]\r\n");
+				#endif
 		}	
 		
 		if(simInStance->sendCmdAndWaitForResp("AT\r\n","OK\r\n",DEFAULT_TIMEOUT*3))
@@ -240,7 +242,9 @@ INT32 GPRS::QuitTransparentTrans()
         retry++;
         if( retry > JOIN_RETRY_TIMES )
         {
+						#ifdef SIM900A_DEBUG_ON	
             ERROR("QUIT");
+						#endif
             return 1;
         }
     }while( simInStance->sendCmdAndWaitForResp((char*)"+++",(char*)"OK",DEFAULT_TIMEOUT*3) );//!< 
@@ -275,7 +279,9 @@ INT8 * GPRS::getIPAddress()
     simInStance->cleanBuffer(ipAddr,32);
     simInStance->readBuffer(ipAddr,32,2);
 #if 1
+		#ifdef SIM900A_DEBUG_ON	
     DEBUG((UINT8*)"ipAddr: ");
+		#endif
     DEBUG(ipAddr);
 #endif
 
@@ -349,7 +355,9 @@ INT32 GPRS::connectTcp()
         retry++;
         if( retry > JOIN_RETRY_TIMES )
         {
+						#ifdef SIM900A_DEBUG_ON	
             ERROR("ERROR:CIPSTART");
+						#endif
 						OSTimeDly(1);
             return 1;
         }
@@ -375,12 +383,16 @@ INT32 GPRS::sendTcpData(UINT8 *data,UINT32 len)
     snprintf(cmd,sizeof(cmd),"AT+CIPSEND=%d\r\n",len);	
     if(0 != simInStance->sendCmdAndWaitForResp(cmd,">",2*DEFAULT_TIMEOUT))
     {
+				#ifdef SIM900A_DEBUG_ON	
         ERROR("ERROR:CIPSEND");
+				#endif
         return -1;
     }
     if(0 != simInStance->sendCmdAndWaitForResp((char*)data,"SEND OK",2*DEFAULT_TIMEOUT))
     {
+				#ifdef SIM900A_DEBUG_ON	
         ERROR("ERROR:SendTCPData");
+				#endif
         return -1;
     }
     return 0;
@@ -390,17 +402,25 @@ INT32 GPRS::sendTcpData(UINT8 *data,UINT32 len)
 	  #if 0
 	  static int cnt=0;
 	  int i;
+		#ifdef SIM900A_DEBUG_ON	
 	  printf("-----%d\r\n",cnt);	
+		#endif
 	  cnt++;
 	  for(i=0; i<len; i++)
 	  {
-		  printf(" 0x%x", data[i]);
+				#ifdef SIM900A_DEBUG_ON	
+				printf(" 0x%x", data[i]);
+				#endif
 		  if((i&0x1F) == 0x1F)
 		  {
+				#ifdef SIM900A_DEBUG_ON	
 			  printf("\r\n");
+				#endif
 		  }
 	  }	
-	  printf("\r\n");	
+			#ifdef SIM900A_DEBUG_ON	
+			printf("\r\n");	
+			#endif
 	  #endif
 	
     simInStance->SendFlatData( data, &len);
@@ -428,7 +448,9 @@ INT32 GPRS::shutTcp(void)
         retry++;
         if( retry > JOIN_RETRY_TIMES )
         {
+						#ifdef SIM900A_DEBUG_ON	
             ERROR("ERROR:AT+CIPSHUT");
+						#endif
             return 1;
         }
     }while( simInStance->sendCmdAndWaitForResp((char*)"AT+CIPSHUT\r\n",(char*)"SHUT OK",DEFAULT_TIMEOUT*3) );//!< 
@@ -439,8 +461,9 @@ INT32 GPRS::shutTcp(void)
 
 INT32 GPRS::TcpPrepare(INT8 RstFlag) 
 {
+		#ifdef SIM900A_DEBUG_ON	
 		PRINT("Try-PowerUp-the-SIM900A-GPRS-Business\r\n");  
-    
+    #endif
 
 		/* config SIM900A(GPRS) */
 		if( init(115200, RstFlag) )
@@ -461,19 +484,29 @@ INT32 GPRS::TcpPrepare(INT8 RstFlag)
         }
         else
         {
+						#ifdef SIM900A_DEBUG_ON	
             DEBUG("commader							[OK]\r\n");	
-						
-					  if( connectTcp() ) //
+						#endif
+					  if( connectTcp()) //
 					  //if( connectTcp("121.69.39.114",9120) ) //  test server
             //if( connectTcp("www.u-cloud.cn",9119) ) // "124.202.183.106",9120  "101.200.213.143",4000 "120.24.6.72",2222
             {
+								#ifdef SIM900A_DEBUG_ON	
                 DEBUG("ERROR CONNECT THE SERVER						[fault]\r\n");
+								#endif
                 return 1;
             }
             else
             {
 								SystemStatus = SYS_CONNECT_SERVER;
+								#ifdef SIM900A_DEBUG_ON	
                 DEBUG("SUCC TO CONNECT THE SERVER					[OK]\r\n");
+								#endif
+								//OSSemPend(semMutex,0,&g_u8Rerr);
+							
+								resetFlag = 0;
+						
+							
             }
         
         }
@@ -497,7 +530,9 @@ INT32 GPRS::connectUdp(const char *ip, INT32 port)
         retry++;
         if( retry > JOIN_RETRY_TIMES )
         {
+						#ifdef SIM900A_DEBUG_ON	
             ERROR("ERROR:CIPSTART");
+						#endif
             return 1;
         }
     }while(  simInStance->sendCmdAndWaitForResp(cipstart, "OK\r\n\r\nCONNECT", DEFAULT_TIMEOUT*3) ) ;
@@ -515,18 +550,25 @@ INT32 GPRS::sendUdpData(UINT8 *data,UINT32 len)
 	#if 0
 	static int cnt=0;
 	int i;
-	DEBUG("-----%d\r\n",cnt);
-	
+		#ifdef SIM900A_DEBUG_ON	
+		DEBUG("-----%d\r\n",cnt);
+		#endif
 	cnt++;
 	for(i=0; i<len; i++)
 	{
+		#ifdef SIM900A_DEBUG_ON	
 		DEBUG(" 0x%x", data[i]);
+		#endif
 		if((i&0x1F) == 0x1F)
 		{
+			#ifdef SIM900A_DEBUG_ON	
 			DEBUG("\r\n");
+			#endif
 		}
 	}	
-	DEBUG("\r\n");	
+		#ifdef SIM900A_DEBUG_ON	
+		DEBUG("\r\n");
+		#endif
 	#endif	
 
 	#if 0
@@ -545,35 +587,47 @@ INT32 GPRS::sendUdpData(UINT8 *data,UINT32 len)
 INT32 GPRS::UdpPrepare(INT8 RstFlag) 
 {
 	  char IP[16];
+		#ifdef SIM900A_DEBUG_ON	
 		DEBUG("Try PowerUp the SIM900A GPRS Business\r\n");
+		#endif
 	  memset(IP, 0, sizeof(IP));
     
     if( init(115200, RstFlag) )
     {
+				#ifdef SIM900A_DEBUG_ON	
         DEBUG("SIM900A  ERROR\r\n");
+				#endif
         return 1;
     }
     else
     {
         if( !join((UINT8*)"CMNET") )
         {
+						#ifdef SIM900A_DEBUG_ON	
             DEBUG("JOIN ERROR\r\n");
+						#endif
             return 1;
         }
         else
         {
+						#ifdef SIM900A_DEBUG_ON	
             DEBUG("JOIN OK\r\n");
+						#endif
 					  snprintf(IP,16,"%d.%d.%d.%d",JCLOUD_IP>>24,(JCLOUD_IP>>16)&0xFF,(JCLOUD_IP>>8)&0xFF, JCLOUD_IP&0xFF);
 					
             //if( connectUdp("120.24.6.72",8000) ) // "124.202.183.106",9120  "101.200.213.143",4000 "120.24.6.72",2222
 					  if( connectUdp(IP,JCLOUD_PORT) )
             {
+								#ifdef SIM900A_DEBUG_ON	
                 DEBUG("ERROR CONNECT THE SERVER\r\n");
+								#endif
                 return 1;
             }
             else
             {
+								#ifdef SIM900A_DEBUG_ON	
                 DEBUG("CONNECT THE SERVER\r\n");
+								#endif
             }
         
         }

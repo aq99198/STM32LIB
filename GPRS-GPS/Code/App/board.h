@@ -59,8 +59,8 @@ typedef float FLOAT32 ;
 #define LED0_PIN    GPIO_Pin_12 // PB3 (LED)
 #define LED1_GPIO   GPIOB
 #define LED1_PIN    GPIO_Pin_4 // PB4 (LED)
-#define BEEP_GPIO   GPIOA
-#define BEEP_PIN    GPIO_Pin_5 // PA12 (Buzzer)
+#define BEEP_GPIO   GPIOE
+#define BEEP_PIN    GPIO_Pin_11 // PE11 (Buzzer) pwm1
 
 
 /************************  function  ***************************/
@@ -100,8 +100,8 @@ typedef float FLOAT32 ;
 
 #ifdef BEEP_GPIO
 #define BEEP_TOGGLE              digitalToggle(BEEP_GPIO, BEEP_PIN);
-#define BEEP_OFF                 systemBeep(false);
-#define BEEP_ON                  systemBeep(true);
+#define BEEP_OFF                 digitalHi(BEEP_GPIO, BEEP_PIN);
+#define BEEP_ON                  digitalLo(BEEP_GPIO, BEEP_PIN);
 #else
 #define BEEP_TOGGLE              ;
 #define BEEP_OFF                 ;

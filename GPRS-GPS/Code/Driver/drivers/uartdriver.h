@@ -61,9 +61,8 @@ extern CUartDriver * SerialConsole ;
 
 #define BulidTime "" __DATE__" " __TIME__ ""
 
-#define DEBUG_INFO   
+ 
 #ifdef  DEBUG_INFO
-
 		#define INFO(x)            	do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
     #define ERROR(x)            do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)
     #define DEBUG(x)            do{SerialConsole->write((uint8_t*)x,strlen((const char*)x));}while(0)

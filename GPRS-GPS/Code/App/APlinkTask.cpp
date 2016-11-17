@@ -147,6 +147,9 @@ void   CAPlink::Run()
 
 }
 
+
+
+
 /*
 @brief  :
 @param  : NONE
@@ -163,6 +166,8 @@ void   CAPlink::RecvMsgTask()
 	
 	static COMMPACKET_t commpckt;
   static int dataLen;
+	Ucloud  *server = Ucloud::getIntance();
+	static JCLOUD_MSG_PACK serverpckt;
 
 	while (1)
 	{
@@ -173,60 +178,58 @@ void   CAPlink::RecvMsgTask()
 			OSTimeDly(500);
 			continue;
 		}
-		
-		switch(commpckt.msgHead.msgID)
-		{	
+			/* safe code */
+			if(commpckt.Data[0] == 0xAA ||
+				 commpckt.Data[1] == 0xBB ||
+				 commpckt.Data[2] == 0xCC ||
+				 commpckt.Data[3] == 0XDD){
+			switch(commpckt.msgHead.msgID)
+			{	
+			/*om msg, used to recv apid/gprsid/ip/port/, write to the last page of flash, 14 bytes*/
 			case 00:
-				/*om msg, used to recv apid/gprsid/ip/port/, write to the last page of flash, 14 bytes*/
-				commpckt.Data[14] = 0;//dummy byte
-				commpckt.Data[15] = 0;//dummy byte
-		
-				/* read form data packet*/
-				JCLOUD_APID = *((UINT32*)&commpckt.Data[0]);
-				JCLOUD_GSMID = *((UINT32*)&commpckt.Data[4]);	
-        JCLOUD_IP = *((UINT32*)&commpckt.Data[8]);		
-        JCLOUD_PORT = *((UINT16*)&commpckt.Data[12]);	
+
+					/* read form data packet*/
+					JCLOUD_APID = *((UINT32*)&commpckt.Data[4]);
+					JCLOUD_GSMID = *((UINT32*)&commpckt.Data[8]);	
+					JCLOUD_IP = *((UINT32*)&commpckt.Data[12]);		
+					JCLOUD_PORT = *((UINT16*)&commpckt.Data[16]);	
+					
+					/* write global value on chip */
+					write_onchip_globalVal();
 			
-				/* save on chip flash*/
-				FLASH_Unlock();
-				FLASH_ClearFlag(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
-				// use last 2k flash
-				FLASH_ErasePage(0x0803f800);
-				
-				write_onchip_flash(0x0803f800,(u8 *)&JCLOUD_APID,sizeof(UINT32));	
-				write_onchip_flash(0x0803f804,(u8 *)&JCLOUD_GSMID,sizeof(UINT32));	
-				write_onchip_flash(0x0803f808,(u8 *)&JCLOUD_IP,sizeof(UINT32));	
-				write_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));
-				FLASH_Lock();
-		
-					/* reconnect to jcloud server */
-					//OSSemPend(semMutex,0,&g_u8Rerr);
-					m_bConnect = false;
-					resetFlag = 1;
-					bConnect = m_bConnect;
-					//OSSemPost(semMutex);
-		
-				//OSSemPend(SemUartW1,g_waitTime,&g_u8Rerr);					
-				PRINT("apid:%08d gsmid:%08d ip:%08d port:%08d\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
-			
-			break;
-			case 01:
-				/* system reboot and download */
-				DEBUG("reboot now\r\n");
-				OSTimeDly(5);
-				SystemReset();
-			break;
-			
-			case 02:
-				
-			break;
-			
-			default:
-			 break;
-		}		
-		OSTimeDly(500);
+						/* reconnect to jcloud server */
+						//OSSemPend(semMutex,0,&g_u8Rerr);
+						m_bConnect = false;
+						resetFlag = 1;
+						bConnect = m_bConnect;
+						//OSSemPost(semMutex);					
+					PRINT("apid:%08d gsmid:%08d ip:%08d port:%08d\r\n",JCLOUD_APID,JCLOUD_GSMID, JCLOUD_IP, JCLOUD_PORT);	
+					break;
+					/* system reboot and download */
+					case 01:
+							DEBUG("reboot now\r\n");
+							OSTimeDly(5);
+							SystemReset();
+					break;
+					
+					default:
+					 break;
+				}
+			}else{
+				/* server send */
+				serverpckt.msgHead.msgid = JCLOUD_MSG_ID_DATA_LINK;	//datalink msg
+				serverpckt.msgHead.msglen = commpckt.msgHead.len+10; 	//length = jack message head(10) +data+checkSum(2)
+				/* copy data */
+				memcpy((UINT8*)serverpckt.Data,&commpckt.msgHead.sync0,serverpckt.msgHead.msglen);
+				OSMutexPend(SemUartW5, 0, &g_u8Rerr);	
+				server->SendMsg(serverpckt);
+				OSMutexPost(SemUartW5);	
+			}		
+		//OSTimeDly(500);
 	}/* end of while */
 }
+
+
 
 
 

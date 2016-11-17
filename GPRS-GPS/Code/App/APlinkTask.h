@@ -51,7 +51,6 @@ class CAPlink
         int    RecvMsg(COMMPACKET_t &pckt); //return len as int
         void   SendDaemon();
 
-
         void write(UINT8 *data, int dataLen){m_pUartLink->write(data,dataLen);}
         void read(UINT8 *data, int *dataLen){m_pUartLink->read(data,dataLen);}
 

@@ -65,6 +65,30 @@ void write_onchip_flash(u32 addr,u8 *p,u16 n)
 }
 
 
+void write_onchip_globalVal(void){
+	/* save on chip flash*/
+		FLASH_Unlock();
+		FLASH_ClearFlag(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
+		// use last 2k flash
+		FLASH_ErasePage(0x0803f800);
+		
+		write_onchip_flash(0x0803f800,(u8 *)&JCLOUD_APID,sizeof(UINT32));	
+		write_onchip_flash(0x0803f804,(u8 *)&JCLOUD_GSMID,sizeof(UINT32));	
+		write_onchip_flash(0x0803f808,(u8 *)&JCLOUD_IP,sizeof(UINT32));	
+		write_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));
+		write_onchip_flash(0x0803f810,(u8 *)&JCLOUD_BUGPS,sizeof(UINT32));
+		FLASH_Lock();
+}
+
+void read_onchip_globalVal(void){
+		read_onchip_flash(0x0803f800,(u8 *)&JCLOUD_APID,sizeof(UINT32));
+		read_onchip_flash(0x0803f804,(u8 *)&JCLOUD_GSMID,sizeof(UINT32));
+		read_onchip_flash(0x0803f808,(u8 *)&JCLOUD_IP,sizeof(UINT32));
+		read_onchip_flash(0x0803f80c,(u8 *)&JCLOUD_PORT,sizeof(UINT32));
+		read_onchip_flash(0x0803f810,(u8 *)&JCLOUD_BUGPS,sizeof(UINT32));
+}
+
+
 void read_onchip_flash(u32 addr,u8 *p,u16 n)
 {
 	while(n--)

@@ -84,7 +84,7 @@ void CUartDriver::write(u8 *data, int dataLen)
 	switch(uartIDX)
     {
 		case USART1_IDX:
-			#if USART_DMA
+			#if 1		// problem dma
 				OSSemPend(SemUartW1, 0, &g_u8Rerr);
 				USART1_DMA(data,dataLen);
 			#else

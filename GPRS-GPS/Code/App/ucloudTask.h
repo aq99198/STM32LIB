@@ -36,6 +36,7 @@ private:
 	  INT32 RecvMsg( JCLOUD_MSG_PACK & pck);
 	  void SendMsgToSIM(JCLOUD_MSG_PACK &pck);
 	  bool getConnFlag(); 
+		CUartDriver       *_dataLink;
 		
 
 private:

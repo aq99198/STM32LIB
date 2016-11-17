@@ -155,7 +155,7 @@ void CUbloxGPS::Initiliaze()
     UbxPackt.head.cls   = UBX_CLS_CFG;
     UbxPackt.head.id    = UBX_CLS_CFG_RATE;
     UbxPackt.head.len   = sizeof(UBX_MSG_CFG_RATE);
-    //pCfgRate->Meas = 0x0FA;//250ms per update
+    //pCfgRate->Meas = 0x3E8;//1s per update
 		pCfgRate->Meas = 0x064;//100ms per update
 		//pCfgRate->Meas = 0x050;//80ms per update
     pCfgRate->Nav  = 0x01;
@@ -273,6 +273,35 @@ void CUbloxGPS::UBXMsgCheckSum(UBX_PACKET &pct, UINT8 &CKA, UINT8 &CKB)
     }
 }
 
+
+/*
+@brief  : send GPS to jouav autopilot
+@param  : len is 
+@retval : NONE
+@note   : NONE
+*/
+void CUbloxGPS::SendGPSAutoPilot(COMMPACKET_t pkt,UINT8 *src,UINT16  len )
+{
+	
+	static UINT8 cka, ckb;
+	COMMPACKET_t pct;															// 
+
+	memcpy((UINT8*)&pct.Data,(UINT8*)src,len);	//16 bit
+	pct.msgHead.sync0 = JACX_SYNHEAD0;						// 0 bit
+	pct.msgHead.sync1 = JACX_SYNHEAD1;						// 0 bit
+	pct.msgHead.msgID = 0xD4; // 新的MSGid				// 0 bit
+	pct.msgHead.len = len;
+	
+	// checkSum
+	MsgCheckSum(pct, cka, ckb);											// 88 bit
+	pct.Data[len++] = cka;												// 0 bit
+	pct.Data[len++] = ckb;												// 0 bit
+
+	_fcLink->write((UINT8*)&pct,len+sizeof(pkt.msgHead));
+	
+}
+
+
 /*
 @brief
 @param
@@ -280,7 +309,9 @@ void CUbloxGPS::UBXMsgCheckSum(UBX_PACKET &pct, UINT8 &CKA, UINT8 &CKB)
 @note
 */
 void  CUbloxGPS::TaskLoop()
-{
+{		
+		static UINT8 len;
+	
     static UBX_PACKET pckt_main;
 		static JCLOUD_MSG_PACK serverpckt;
     UBX_MSG_HEAD *REV_MSG_HEAD;
@@ -289,6 +320,8 @@ void  CUbloxGPS::TaskLoop()
 		static COMMPACKET_t pkt;
 		static INT32  tmp_lati, tmp_long, tmp;
 		static UINT8 cka, ckb;
+		static UINT32 timerEnd, timerStart;
+		timerStart = OSTimeGet();
 	
 	 memset(pkt.Data,0,MAX_PACKET_LENGTH);
     pkt.msgHead.sync0 = JACX_SYNHEAD0;
@@ -311,6 +344,7 @@ void  CUbloxGPS::TaskLoop()
             {
 								 case 0x07: 
 									{
+										
 										UBX_MSG_NAV_PVT ubx_pvt;
 										memcpy(&ubx_pvt,src,pckt_main.head.len);
 										// logic
@@ -340,15 +374,52 @@ void  CUbloxGPS::TaskLoop()
 										serverpckt.msgHead.msglen = sizeof(pkt.msgHead) + 24; 
 										memcpy((UINT8*)serverpckt.Data,&pkt.msgHead.sync0,serverpckt.msgHead.msglen);
 										
+										
+										
+											/************* send back_up GPS *******************/ 
+											len = REV_MSG_HEAD->len;
+											COMMPACKET_t pct;															// 
+											memcpy((UINT8*)&pct.Data,(UINT8*)src,len);	//16 bit
+											pct.msgHead.sync0 = JACX_SYNHEAD0;						// 0 bit
+											pct.msgHead.sync1 = JACX_SYNHEAD1;						// 0 bit
+											pct.msgHead.dest = 0x00;
+											pct.msgHead.source = 0x00;
+											pct.msgHead.msgID = 0xD4; // 新的MSGid				// 0 bit
+											pct.msgHead.ACK_NAK = 0x00;
+											pct.msgHead.SeqNum = 0x00;
+											pct.msgHead.len = len;
+											
+											// checkSum
+											MsgCheckSum(pct, cka, ckb);											// 88 bit
+											pct.Data[len++] = cka;												// 0 bit
+											pct.Data[len++] = ckb;												// 0 bit
+											
+											
+											read_onchip_flash(0x0803f810,(u8 *)&JCLOUD_BUGPS,sizeof(UINT32));
+											if(JCLOUD_BUGPS){
+												/* not need OSMutex ,usartDriver aready have*/
+												_fcLink->write((UINT8*)&pct,len+sizeof(pkt.msgHead));
+												
+											}
+										
+											/************* send back_up GPS *******************/ 
+											
+										
 										if((src[21] != 0) && (src[20] == 0x03) && ((*(UINT16*)&src[76]) <= 410))
 										{
-											OSMutexPend(SemUartW5, 0, &g_u8Rerr);	
-											server->SendMsg(serverpckt);
-											OSMutexPost(SemUartW5);	
-											SystemStatus = SYS_GPS_FIX;
-											#ifdef GPS_DEBUG_ON
-											PRINT("LAT:%d \t LON:%d \r\n",ubx_pvt.LAT,ubx_pvt.LON);
-											#endif
+											timerEnd = OSTimeGet();
+											if((timerEnd - timerStart) > GPS_MSG_INTERVAL_MS){
+												OSMutexPend(SemUartW5, 0, &g_u8Rerr);	
+												server->SendMsg(serverpckt);
+												OSMutexPost(SemUartW5);	
+												SystemStatus = SYS_GPS_FIX;
+												#ifdef GPS_DEBUG_ON
+												DEBUG("SEND GPS\r\n");
+												#endif
+												timerStart = OSTimeGet();
+												}
+							
+											
 										}	else{
 											SystemStatus = SYS_CONNECT_SERVER;
 											#ifdef GPS_DEBUG_ON

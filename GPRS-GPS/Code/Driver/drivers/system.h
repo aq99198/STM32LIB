@@ -16,7 +16,8 @@ void JTAG_Set(u8 mode);
 void Power_ON(void);
 void GPRS_Wakeup(void);
 void  SysStausCheck(void);
-			
+void write_onchip_globalVal(void);
+void read_onchip_globalVal(void);
 void serialCom(void);
 			
 void jump(void);		
